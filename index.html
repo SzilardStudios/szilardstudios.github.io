@@ -399,6 +399,25 @@
     letter-spacing: 0.04em;
   }
   .btn-cobblestone:hover { background: linear-gradient(135deg, var(--amber-deep), var(--sepia)); color: var(--warm-white); }
+
+  .contact { border-top: 1px solid var(--parchment-dark); }
+  .contact-inner { max-width: 580px; margin: 0 auto; text-align: center; }
+  .contact-text { color: var(--ink-soft); font-size: 1.05rem; margin-bottom: 1.5rem; line-height: 1.8; }
+  .contact-email {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--amber-deep);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--amber);
+    padding-bottom: 0.2rem;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    margin-bottom: 1rem;
+  }
+  .contact-email:hover { color: var(--sepia); border-color: var(--sepia); }
+  .contact-note { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; color: var(--ash); margin-top: 1rem; }
   .support { border-top: 1px solid var(--parchment-dark); }
   .support-inner { max-width: 620px; margin: 0 auto; text-align: center; }
   .support p { color: var(--ink-soft); margin-bottom: 1rem; font-size: 1.05rem; }
@@ -551,6 +570,7 @@
     <li><a href="#universe">The Universe</a></li>
     <li><a href="#albums">Albums</a></li>
     <li><a href="#request">Request a Track</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#support">Support</a></li>
   </ul>
 </nav>
@@ -1018,6 +1038,19 @@
           Your request is on its way. The road delivers within 48 hours. Thank you.
         </div>
       </form>
+    </div>
+  </div>
+</section>
+
+
+<section class="contact" id="contact">
+  <div class="section-wrap">
+    <div class="contact-inner reveal">
+      <p class="section-label">Get In Touch</p>
+      <h2 class="section-title">Say hello</h2>
+      <p class="contact-text">For collaborations, press enquiries, or anything else — the road is always open. Write to us in any language.</p>
+      <a href="mailto:szilardstudios@gmail.com" class="contact-email">szilardstudios@gmail.com</a>
+      <p class="contact-note">We read every message and reply to every road that reaches us.</p>
     </div>
   </div>
 </section>
