@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bands — Szilard Studios</title>
+<meta name="description" content="Meet the bands behind the Road/Palace Universe — their origins, their members, their stories. Real biographies for the voices behind every album.">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJVFZ1WTDL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZJVFZ1WTDL');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #F4ECD8;
+    --parchment-dark: #E8D9B8;
+    --amber: #C4882A;
+    --amber-deep: #9A6418;
+    --sepia: #6B4C2A;
+    --ink: #2C1A0E;
+    --ink-soft: #4A3020;
+    --dust: #B8A88A;
+    --warm-white: #FAF5EA;
+    --ash: #8C7660;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, var(--parchment) 60%, transparent);
+  }
+  .nav-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sepia);
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ash);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--amber); }
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(196,136,42,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px; height: 80px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+  }
+  .hero-eyebrow {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--amber-deep); }
+  .hero-divider {
+    width: 60px; height: 1px;
+    background: var(--amber);
+    margin: 0 auto 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+  .hero-tagline {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--sepia);
+    max-width: 680px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .hero-tagline .invitation {
+    display: block;
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: var(--ash);
+    font-size: 0.95em;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Crimson Text', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dust);
+    opacity: 0;
+    animation: fadeUp 1s ease 2s forwards;
+  }
+  .section-wrap {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  .universe { border-top: 1px solid var(--parchment-dark); }
+  .universe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+  .universe-text p { color: var(--ink-soft); margin-bottom: 1.2rem; font-size: 1.1rem; }
+  .universe-quote {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--sepia);
+    border-left: 2px solid var(--amber);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    line-height: 1.8;
+  }
+  .universe-pillars { display: flex; flex-direction: column; gap: 1.5rem; }
+  .pillar {
+    padding: 1.5rem;
+    border: 1px solid var(--parchment-dark);
+    background: var(--warm-white);
+    position: relative;
+  }
+  .pillar::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--amber);
+  }
+  .pillar-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber-deep);
+    margin-bottom: 0.4rem;
+  }
+  .pillar p { font-size: 0.95rem; color: var(--ash); }
+  .albums { border-top: 1px solid var(--parchment-dark); }
+  .album-featured {
+    background: var(--warm-white);
+    border: 1px solid var(--parchment-dark);
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    transition: box-shadow 0.4s ease;
+  }
+  .album-featured:hover { box-shadow: 0 12px 40px rgba(100,60,20,0.12); }
+  .album-featured .album-art { min-height: 340px; aspect-ratio: auto; }
+  .albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .album-card {
+    background: var(--warm-white);
+    border: 1px solid var(--parchment-dark);
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .album-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(100,60,20,0.12);
+  }
+  .album-card.coming-soon { opacity: 0.7; }
+  .album-card.coming-soon:hover { transform: none; box-shadow: none; }
+  .album-art {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .art-crossing  { background: linear-gradient(135deg, #1A0A05, #4A2010, #9A5020, #C4882A); }
+  .art-lifetime  { background: linear-gradient(135deg, #3D2010, #7A4820, #C4882A); }
+  .art-hotel     { background: linear-gradient(135deg, #0D1A2E, #2A4A6A, #5A8AAA); }
+  .art-preacher  { background: linear-gradient(135deg, #1A1005, #5A3A10, #AA7A30); }
+  .art-oldest    { background: linear-gradient(135deg, #0A1A0A, #2A5A2A, #6A9A5A); }
+  .art-origo1    { background: linear-gradient(135deg, #1A1A2E, #4A3060, #8B6090); }
+  .art-origo2    { background: linear-gradient(135deg, #2A1020, #6A2A50, #C06A90); }
+  .art-cross     { background: linear-gradient(135deg, #1A1A1A, #3A3A4A, #6A6A8A); }
+  .album-art-placeholder {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 2rem;
+    line-height: 1.3;
+  }
+  .album-featured .album-art-placeholder { font-size: 2.4rem; }
+  .album-number {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+  }
+  .coming-soon-badge {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: rgba(0,0,0,0.5);
+    color: rgba(255,255,255,0.8);
+    font-family: 'Crimson Text', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+  }
+  .album-info { padding: 1.8rem; }
+  .album-featured .album-info { padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+  .album-genre {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.4rem;
+  }
+  .album-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+  }
+  .album-featured .album-title { font-size: 2.4rem; }
+  .album-subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ash);
+    margin-bottom: 0.9rem;
+  }
+  .album-desc {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 0.8rem;
+  }
+  .album-featured .album-desc { font-size: 1rem; }
+  .album-quote {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--sepia);
+    border-left: 2px solid var(--amber);
+    padding-left: 1rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.7;
+  }
+  .album-actions { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1rem; }
+  .album-listen { display: flex; gap: 0.6rem; }
+  .album-downloads { border-top: 1px solid var(--parchment-dark); padding-top: 0.8rem; }
+  .download-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 0.5rem;
+  }
+  .download-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+    align-items: center;
+  }
+  .download-format {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ash);
+    width: 2.5rem;
+    flex-shrink: 0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--amber); color: var(--warm-white); }
+  .btn-primary:hover { background: var(--amber-deep); }
+  .btn-download {
+    background: var(--warm-white);
+    color: var(--ink-soft);
+    border: 1px solid var(--parchment-dark);
+    font-size: 0.78rem;
+  }
+  .btn-download:hover { border-color: var(--amber); color: var(--amber-deep); }
+  .btn-stream {
+    background: #1DB954;
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.4rem;
+  }
+  .btn-stream:hover { background: #17a349; color: #FFFFFF; }
+  .btn-cobblestone {
+    width: 100%;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--sepia), var(--amber-deep));
+    color: var(--warm-white);
+    padding: 0.6rem 1rem;
+    font-size: 0.79rem;
+    letter-spacing: 0.04em;
+  }
+  .btn-cobblestone:hover { background: linear-gradient(135deg, var(--amber-deep), var(--sepia)); color: var(--warm-white); }
+
+  .contact { border-top: 1px solid var(--parchment-dark); }
+  .contact-inner { max-width: 580px; margin: 0 auto; text-align: center; }
+  .contact-text { color: var(--ink-soft); font-size: 1.05rem; margin-bottom: 1.5rem; line-height: 1.8; }
+  .contact-email {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--amber-deep);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--amber);
+    padding-bottom: 0.2rem;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    margin-bottom: 1rem;
+  }
+  .contact-email:hover { color: var(--sepia); border-color: var(--sepia); }
+  .contact-note { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; color: var(--ash); margin-top: 1rem; }
+  .support { border-top: 1px solid var(--parchment-dark); }
+  .support-inner { max-width: 620px; margin: 0 auto; text-align: center; }
+  .support p { color: var(--ink-soft); margin-bottom: 1rem; font-size: 1.05rem; }
+  footer {
+    border-top: 1px solid var(--parchment-dark);
+    padding: 3rem 2rem;
+    text-align: center;
+    background: var(--warm-white);
+  }
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--sepia);
+    margin-bottom: 0.5rem;
+  }
+  .footer-tagline {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ash);
+    margin-bottom: 1rem;
+  }
+  .footer-universe {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--dust);
+    margin-bottom: 1.5rem;
+    line-height: 2.2;
+  }
+  .footer-universe span { color: var(--amber); margin: 0 0.4rem; }
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+  .footer-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dust);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .footer-links a:hover { color: var(--amber); }
+  .footer-copy { font-size: 0.8rem; color: var(--dust); }
+  .album-card.rtl { direction: rtl; text-align: right; }
+  .album-card.rtl .album-number { left: auto; right: 1rem; }
+  .album-card.rtl .download-row { flex-direction: row-reverse; }
+  .album-card.rtl .album-listen { flex-direction: row-reverse; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  @media (max-width: 960px) {
+    .album-featured { grid-template-columns: 1fr; }
+    .album-featured .album-art { min-height: 220px; aspect-ratio: 16/7; }
+    .albums-grid { grid-template-columns: repeat(2, 1fr); }
+    .universe-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .albums-grid { grid-template-columns: 1fr; }
+    .section-wrap { padding: 4rem 1.5rem; }
+  }
+
+  .singles { border-top: 1px solid var(--parchment-dark); }
+  .request { border-top: 1px solid var(--parchment-dark); }
+  .request-inner { max-width: 720px; margin: 0 auto; }
+  .request-intro { color: var(--ink-soft); font-size: 1.05rem; margin-bottom: 2.5rem; line-height: 1.8; }
+  .request-form { display: flex; flex-direction: column; gap: 1.2rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ash); }
+  #format-label { transition: color 0.3s ease; }
+  #format-label:not(:empty)[innerHTML*="✓"] { color: var(--amber-deep); }
+  .form-group input, .form-group select {
+    background: var(--warm-white);
+    border: 1px solid var(--parchment-dark);
+    padding: 0.7rem 1rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.3s ease;
+    -webkit-appearance: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--amber); }
+  .format-options { display: flex; gap: 1.5rem; padding-top: 0.3rem; }
+  .format-option {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--parchment-dark);
+    background: var(--warm-white);
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+  .format-option:hover { border-color: var(--amber); color: var(--amber-deep); }
+  .format-option input[type=radio] { display: none; }
+  .format-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--dust);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+    font-size: 11px;
+    color: transparent;
+  }
+  .format-option:hover .format-checkbox { border-color: var(--amber); }
+  .format-option.selected {
+    border-color: var(--amber);
+    color: var(--amber-deep);
+    font-weight: 600;
+  }
+  .format-option.selected .format-checkbox {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--warm-white);
+  }
+  .btn-request { align-self: flex-start; padding: 0.7rem 2rem; font-size: 0.9rem; margin-top: 0.5rem; }
+  .form-note { font-size: 0.85rem; font-style: italic; color: var(--ash); margin-top: 0.3rem; }
+  .form-success { display: none; background: var(--warm-white); border-left: 3px solid var(--amber); padding: 1.2rem 1.5rem; font-family: 'IM Fell English', serif; font-style: italic; color: var(--sepia); font-size: 1.05rem; margin-top: 1rem; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* --- BAND PROFILE PAGE --- */
+  .bands-hero { padding: 8rem 1.5rem 3rem; text-align: center; }
+  .bands-hero-eyebrow { font-family: 'Crimson Text', serif; font-size: 0.85rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber-deep); margin-bottom: 1rem; }
+  .bands-hero-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 400; color: var(--ink); line-height: 1.15; margin-bottom: 1.2rem; }
+  .bands-hero-desc { font-family: 'Crimson Text', serif; font-size: 1.1rem; color: var(--ink-soft); max-width: 640px; margin: 0 auto; line-height: 1.8; }
+  .bands-back { display: inline-block; margin-top: 1.8rem; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber-deep); text-decoration: none; border-bottom: 1px solid var(--amber-deep); padding-bottom: 2px; }
+  .bands-back:hover { color: var(--amber); border-color: var(--amber); }
+
+  .band-jump-nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; max-width: 900px; margin: 2.5rem auto 0; }
+  .band-jump-nav a { padding: 0.45rem 1rem; border: 1px solid var(--parchment-dark); font-family: 'Crimson Text', serif; font-size: 0.82rem; color: var(--sepia); text-decoration: none; background: var(--warm-white); transition: all 0.25s ease; }
+  .band-jump-nav a:hover { border-color: var(--amber); color: var(--amber-deep); }
+
+  .band-section { border-top: 1px solid var(--parchment-dark); padding: 4rem 1.5rem; }
+  .band-section-inner { max-width: 900px; margin: 0 auto; }
+  .band-section-label { font-family: 'Crimson Text', serif; font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem; }
+  .band-section-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; color: var(--ink); margin-bottom: 2.5rem; }
+
+  .band-card { background: var(--warm-white); border: 1px solid var(--parchment-dark); padding: 2.2rem 2.5rem; margin-bottom: 2rem; scroll-margin-top: 90px; }
+  .band-card-genre { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem; }
+  .band-card-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; color: var(--ink); line-height: 1.2; margin-bottom: 0.3rem; }
+  .band-card-meta { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; color: var(--ash); margin-bottom: 1.5rem; }
+
+  .band-members-title { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sepia); margin: 1.5rem 0 0.7rem; }
+  .band-members-list { list-style: none; }
+  .band-members-list li { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.5rem; }
+  .band-members-list li strong { color: var(--ink); font-weight: 600; }
+
+  .band-story p { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.85; margin-bottom: 1rem; }
+
+  .band-sound-title { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sepia); margin: 1.5rem 0 0.7rem; }
+  .band-sound-list { list-style: none; }
+  .band-sound-list li { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; margin-bottom: 0.5rem; }
+  .band-sound-list li em { font-family: 'IM Fell English', serif; font-style: italic; color: var(--sepia); }
+
+  .band-quote { font-family: 'IM Fell English', serif; font-style: italic; font-size: 1rem; color: var(--sepia); border-left: 2px solid var(--amber); padding-left: 1rem; margin: 1.5rem 0; line-height: 1.7; }
+
+  .band-crown-result { display: inline-block; margin-top: 0.5rem; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--amber-deep); font-weight: 600; }
+  .band-connection { margin-top: 1rem; font-size: 0.88rem; font-style: italic; color: var(--ash); border-top: 1px solid var(--parchment-dark); padding-top: 1rem; }
+
+  @media (max-width: 600px) {
+    .band-card { padding: 1.8rem 1.5rem; }
+    .bands-hero-title { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Szilard Studios</span>
+  <ul class="nav-links">
+    <li><a href="index.html#albums">Albums</a></li>
+    <li><a href="index.html#singles">Singles</a></li>
+    <li><a href="#palace-competitors">The Bands</a></li>
+    <li><a href="index.html#request">Request a Track</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="bands-hero">
+  <p class="bands-hero-eyebrow">Szilard Studios</p>
+  <h1 class="bands-hero-title">The Bands</h1>
+  <p class="bands-hero-desc">Every album on this site has a band behind it — a name, an origin, a lineup, a reason they play what they play. This is where you meet them.</p>
+  <a href="index.html" class="bands-back">← Back to the Albums</a>
+
+  <div class="band-jump-nav">
+    <a href="#the-unannounced">The Unannounced</a>
+    <a href="#al-matar">Al-Matar</a>
+    <a href="#the-cross">The Cross</a>
+    <a href="#sabre">Sabre</a>
+    <a href="#the-framework">The Framework</a>
+    <a href="#the-burnline">The Burnline</a>
+    <a href="#ironclad">Ironclad</a>
+    <a href="#origo">Origo</a>
+    <a href="#the-nerve">The Nerve</a>
+    <a href="#the-last-mile">The Last Mile</a>
+    <a href="#the-open-field">The Open Field</a>
+    <a href="#marcus">Marcus</a>
+    <a href="#onibi">Onibi</a>
+    <a href="#cockpit">Cockpit</a>
+    <a href="#el-rayo">El Rayo</a>
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION I: THE PALACE COMPETING BANDS -->
+<!-- ============================================= -->
+<section class="band-section" id="palace-competitors">
+  <div class="band-section-inner">
+    <p class="band-section-label">The Fifth Crown</p>
+    <h2 class="band-section-title">The Palace — Competing Bands</h2>
+
+    <!-- THE UNANNOUNCED -->
+    <div class="band-card" id="the-unannounced">
+      <p class="band-card-genre">Raw Roots Rock</p>
+      <h3 class="band-card-name">The Unannounced</h3>
+      <p class="band-card-meta">Origin: The road. Last known stop — Bethlehem.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Syl</strong> — lead vocals, lead guitar. Left his hometown of Millhaven young, carrying a guitar given to him by a railroad worker he never saw again.</li>
+        <li>Three others — rhythm guitar, bass, drums. Found one by one on the road.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Syl learned the blues on a railroad worker's breaks. When the section work ended, the old man handed him the guitar and said nothing. Syl's mother didn't cry when he left — she'd been ready, and told him to go find whatever he'd been playing.</p>
+        <p>Years of copying other bands followed until one ordinary rehearsal when everyone reached into their pockets at once — crumpled papers, their own songs. Nobody remembers who went first.</p>
+        <p>Before they were The Unannounced, they were just a working rock n' roll band — not famous, not struggling, the hardest place to be. Three towns dark, fuel gauge low, they stopped at Della's for coffee on its closing Saturday night and stopped again in the doorway at what they found: an old man's band, Christmas lights, twenty people, and decades of weight in one room. Their frontman walked straight up to Marcus and offered to hold the set while Marcus got a cold one — "let us," not "may I." Marcus laughed the kind of laugh that's been somewhere, and said: "All right, kid. Let's see if your hands are as good as mine." From that night the sound of the room changed — blues structure under their rock energy, Marcus's decades multiplying with their velocity.</p>
+        <p>They arrived at the Palace from Bethlehem. Nobody knew who they were. Nobody announced them.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Our Round</em> — technical, fast, a statement. The fire.</li>
+        <li><em>What I Carry</em> — warm, certain, the smile and the open hand.</li>
+        <li><em>Where I'm From</em> — acoustic, heart-level, Millhaven and the old man's guitar.</li>
+      </ul>
+
+      <div class="band-quote">"We're not the best there ever was. We're just the best on this night for you."</div>
+      <p class="band-crown-result">Crown Result: Winners of the Fifth Crown. World Tour.</p>
+      <p class="band-connection">Connected to Marcus and Della's, The Oldest Road (Track 7 — Lydia), and the entire Road Universe spine.</p>
+    </div>
+
+    <!-- AL-MATAR -->
+    <div class="band-card" id="al-matar">
+      <p class="band-card-genre">Arabic Rock</p>
+      <h3 class="band-card-name">Al-Matar</h3>
+      <p class="band-card-meta">Origin: The desert. The maqam. The tradition before the tradition. Name means "The Rain."</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Tariq</strong> — lead vocals. When he opens his mouth, a thousand years answer back.</li>
+        <li><strong>Noor</strong> — oud. When she plays, the centuries crack.</li>
+        <li><strong>Yusra</strong> — darbuka. Like a heartbeat in stone.</li>
+        <li><strong>Rafiq</strong> — bass. Holds the bottom like a man who holds his own.</li>
+        <li><strong>Bassem</strong> — rhythm guitar. Strums the rhythm the desert always knew.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Al-Matar carry something ancient — not as an aesthetic choice but as an inheritance. The oud was here before the amp. The maqam lives in the blood before it lives in any instrument. They were told the desert has no music. They said the desert IS the music.</p>
+        <p>They have played everywhere the light was needed, carrying what they carry — Al-Amana, the trust, the torch. Not because they chose to. Because the torch was burning when they found it. They could not let it wait.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Al-Amana</em> — sacred trust, mostly Arabic, ancient and certain.</li>
+        <li><em>Hamilū al-Siraj</em> — bearers of the torch, soul rock energy, the compulsion that never stops.</li>
+        <li><em>A Good Oud Song</em> — arena rock, defiant, joyful.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Reached the final three. Third place.</p>
+      <p class="band-connection">Two previous albums — one about the Prophet's companions ﷺ, one about the Hijrah. Part of the Road Universe's expanding world beyond American blues and rock.</p>
+    </div>
+
+    <!-- THE CROSS -->
+    <div class="band-card" id="the-cross">
+      <p class="band-card-genre">Gospel Rock</p>
+      <h3 class="band-card-name">The Cross</h3>
+      <p class="band-card-meta">Origin: The church. Which they never left. A choir that found rock — not a band that found gospel.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Amos</strong> — lead vocals, choir director. Named after the biblical prophet. Still leads his congregation Sunday mornings. Every other night he leads the band.</li>
+        <li>The choir — the original community. Not backing singers. The building itself.</li>
+        <li>The band — organ (always), electric guitar, bass, drums.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>The Cross began as a choir. Voices finding each other inside church walls over years of Sunday mornings. Amos stood at the front, listening, building. The congregation had concerns when the music started changing. They stopped objecting when they heard what the rehearsals sounded like.</p>
+        <p>Amos's theology is simple and radical — God is everywhere. Not just in the church. Not just on Sunday. So the music goes everywhere. He read the scripture more carefully than anyone and followed it all the way out the door.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Everywhere</em> — full gospel explosion, call and response, Amos preaching as much as singing.</li>
+        <li><em>Where The Choir Found Its Walls</em> — the origin, the community recognising itself.</li>
+        <li><em>The Sign</em> — the quietest, most personal thing The Cross play.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Top five Night Two. Did not reach the final.</p>
+      <p class="band-connection">Two previous albums — one structured around the Lord's Prayer, one around the eight Beatitudes. Part of the Road Universe's spiritual tradition alongside The Road of the Preacher and The Oldest Road.</p>
+    </div>
+
+    <!-- SABRE -->
+    <div class="band-card" id="sabre">
+      <p class="band-card-genre">Blues Rock</p>
+      <h3 class="band-card-name">Sabre</h3>
+      <p class="band-card-meta">Origin: Chicago. One word. The blade that cuts clean.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Sabre</strong> — lead vocals, guitar. The Voice of Chicago. No other name needed.</li>
+        <li>Her band — follows her like a shadow. Found because they could answer one question: can you follow her when she goes somewhere unexpected?</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Sabre is the oldest of six siblings. She sang five smaller faces to sleep before she knew she had a voice. The lullaby came before the blues. The blues came through the walls of a Chicago neighbourhood before she knew what it was — just the air, just the weather, just how things sounded.</p>
+        <p>Free spirit and deep roots. Joy and weight. Speed and blues. She was always too fast for the purists. They told her to slow down, feel it more. She felt it plenty. Just faster.</p>
+        <p>She has been to the Palace before. Five years ago she didn't make the top five. She went home. Wrote seven songs in two weeks. Came back. Not perfect. Better.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Stand Up!</em> — Chicago fast and bright, the joy of standing back up.</li>
+        <li><em>Just For You</em> — warm and generous, Sabre singing to one person in a room of thousands.</li>
+        <li><em>Lullaby Blues</em> — the origin. Five smaller faces. The voice before it had a name.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Reached the final three. Second place.</p>
+      <p class="band-connection">Chicago blues rock echoes The Crossing — a similar space in the universe, a different door into it.</p>
+    </div>
+
+    <!-- THE FRAMEWORK -->
+    <div class="band-card" id="the-framework">
+      <p class="band-card-genre">Progressive Rock</p>
+      <h3 class="band-card-name">The Framework</h3>
+      <p class="band-card-meta">Origin: Five different conservatoires. Five different corridors. One question.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Cath</strong> — violin. The leading instrument. The compass.</li>
+        <li><strong>Jen</strong> — piano, vocals. The harmonic memory.</li>
+        <li><strong>Mat</strong> — electric guitar. The conversation.</li>
+        <li><strong>Jeff</strong> — bass. The architecture.</li>
+        <li><strong>Paul</strong> — drums. The heartbeat.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>All five classically trained. All five walked away from the conservatoire at exactly the moment they were expected to commit to it permanently. Not in rebellion. Out of necessity. The structures were too small.</p>
+        <p>They found each other in a corridor — five people carrying instruments, all walking away from the same door on the same morning. The question that started everything: why is the leaf only green?</p>
+        <p>They have never played the same set twice. Not approximately — exactly. Beethoven wrote the note. The Framework plays what Beethoven felt the morning he found it.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Blue Leaf</em> — the origin story, five rivers finding each other. Released as a single.</li>
+        <li><em>Behind The Notes</em> — the hunger, the "why not" that drives every rehearsal.</li>
+        <li><em>Five Rivers</em> — what they carry. Five completely different rivers finding the same sea.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Top five Night Two. Did not reach the final.</p>
+      <p class="band-connection">Full album, <em>Every Night, Once</em>, released separately — sixteen tracks, each secretly built on a classical composer's work, never quoted, only felt.</p>
+    </div>
+
+    <!-- THE BURNLINE -->
+    <div class="band-card" id="the-burnline">
+      <p class="band-card-genre">Soul Rock</p>
+      <h3 class="band-card-name">The Burnline</h3>
+      <p class="band-card-meta">Origin: Detroit. Motown. Saturday nights through the walls. Where the soul meets the rock and everything catches fire.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Eli</strong> — lead vocals. Grew up with his ear against the wall, listening to the greatest soul music ever made bleed through the plaster on Saturday nights.</li>
+        <li>Two trumpets, one trombone — the horns that never left. Were told to lose them. Didn't.</li>
+        <li>Guitar, bass, drums, keyboard — the rock foundation underneath the Motown architecture.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Eli grew up inside the sound before he knew what it was. Not inspired by Detroit soul music — raised inside it. He collected handshakes, not autographs. He sat beside the ones who built it. They let him sing their songs alongside his.</p>
+        <p>Eight albums later, every producer, every label, every industry voice still says lose the horns. The Burnline still has the horns — because the horns are the band. Remove them and you have something competent. Keep them and you have something that makes people stop walking and turn around.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Saturday City</em> — Detroit, the wall, the Saturday nights, why the horns stayed.</li>
+        <li><em>Oh My Sweet Innocent Child</em> — the challenge and the celebration.</li>
+        <li><em>Every Hand I Shook</em> — the love letter to every giant who bent down and said come on inside.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Did not reach the top five. Returned Night Two to play while the Crown was decided.</p>
+      <p class="band-connection">Full album, <em>Every Window Lit</em>, released separately — fourteen tracks, one Detroit block, one ordinary day.</p>
+    </div>
+
+    <!-- IRONCLAD -->
+    <div class="band-card" id="ironclad">
+      <p class="band-card-genre">Hard Rock</p>
+      <h3 class="band-card-name">Ironclad</h3>
+      <p class="band-card-meta">Origin: Los Angeles. Five kids from the same neighbourhood who watched two films play out on the same streets.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Reid</strong> — lead vocals. His voice lands exactly where he aims it. Every time.</li>
+        <li>Lead guitar, rhythm guitar, bass, drums — twenty years, same lineup, no changes.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Los Angeles showed them two films simultaneously. People who chased the dream, changed themselves for it, compromised everything — and got nothing. People who stayed exactly who they were — and got everything. Ironclad chose the second film before they were even famous.</p>
+        <p>The cost included turning down stadiums publicly. They didn't explain themselves. Turned down five concerts to be at the Crown instead — not for the prize, but because the Palace is the only stage where they don't have to be stars. Just five guys. Just the music.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>City of Everything</em> — L.A., two films, the choice made early, still making it every morning.</li>
+        <li><em>Take It Or Leave It</em> — twenty years of the same answer at full volume.</li>
+        <li><em>Five As One</em> — the celebration. First night playing fifty people. Twenty years of choosing the same four people every single day.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Did not reach the top five.</p>
+      <p class="band-connection">The classic rock tradition anchoring the Crown. Hard rock precision and emotional ferocity existing simultaneously.</p>
+    </div>
+
+    <!-- ORIGO -->
+    <div class="band-card" id="origo">
+      <p class="band-card-genre">Psychedelic Rock · World Music</p>
+      <h3 class="band-card-name">Origo</h3>
+      <p class="band-card-meta">Origin: Everywhere. The first circle. Before music had a name. Latin for "origin."</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Ankura</strong> — voice. Not a frontman. An anchor. Name derives from Sanskrit — "the sprout, the beginning."</li>
+        <li>Five others — violin/strings, guitar, percussion from multiple traditions, sitar, oud. No standard rock lineup — whatever the music needed them to find.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Six people who formed around a shared obsession — the sound that existed before music had a name. They didn't form a band. They went looking for something. Himalayan villages. The African coast. A Greek island in winter. A desert road with nothing on it. Morocco after dark. They sat beside fires that had been burning for centuries.</p>
+        <p>They came back with instruments that had never shared a stage before — Tibetan singing bowls, oud, darbuka, sitar, duduk, Western guitar underneath all of it, and a choir that sings in Sanskrit and Arabic, questions and answers between two ancient languages who discovered they were always saying the same thing.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Pratham</em> — The First. Sanskrit choir. Before everything.</li>
+        <li><em>Al-Bahth</em> — The Search. Arabic choir. The restless hunger that took them everywhere.</li>
+        <li><em>Free Soul</em> — Arabic and Sanskrit in conversation. Almost no English.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Did not reach the top five. Returned Night Two to play <em>Free Soul</em> while the judges deliberated.</p>
+      <p class="band-connection">Two albums released — <em>Origo</em>, tracing the journey to the mountain, and <em>AN</em>, a camera album observing timeless ordinary moments after it.</p>
+    </div>
+
+    <!-- THE NERVE -->
+    <div class="band-card" id="the-nerve">
+      <p class="band-card-genre">Punk Rock</p>
+      <h3 class="band-card-name">The Nerve</h3>
+      <p class="band-card-meta">Origin: Manchester, England. Punks, not anarchists. They believe things can be fixed.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>John "Ginger" Mourth</strong> — lead vocals, rhythm guitar. The older brother. The composer.</li>
+        <li><strong>Thomas "Bones" Mourth</strong> — vocals, guitar. The younger brother. The main songwriter.</li>
+        <li><strong>Mark "Ice" Smith</strong> — bass. The groove that holds everything.</li>
+        <li><strong>Steven "Barrel" Mitchell</strong> — drums. Named for both the drums and his fascination with every kind of beer.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Ginger and Bones grew up in Manchester watching problems go unsolved — decisions made by people who had never stood on their streets. They found Ice and Barrel and formed around one obsession: honesty. Not performance, not spectacle. Just the truth, delivered at full volume, constructed with complete precision.</p>
+        <p>Nobody expected them at the Palace. Nobody knows exactly how they got in. Lydia saw them. They stayed. No explanation was ever given.</p>
+        <p>Manchester is not a brand to them. It's Mrs Patterson on the third floor with no heating since October. It's thirty-two kids in a room built for twenty. The Nerve see the problems, name the solutions, and demand something happens.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Not Just A Name</em> — Manchester, the people behind the name.</li>
+        <li><em>Show Me!</em> — specific problems, clear solutions, delivered with complete precision.</li>
+        <li><em>Coming Home</em> — the most unexpected Nerve song. Joy. Pure Manchester love.</li>
+        <li><em>Tonight, Truth</em> — written the night Hungary voted. Sixteen years ending.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Did not reach the top five.</p>
+      <p class="band-connection">The political and social conscience of the Crown. Manchester honest. The warmth underneath the precision.</p>
+    </div>
+
+    <!-- THE LAST MILE -->
+    <div class="band-card" id="the-last-mile">
+      <p class="band-card-genre">Southern Rock</p>
+      <h3 class="band-card-name">The Last Mile</h3>
+      <p class="band-card-meta">Origin: Atlanta, Georgia. Five kids from the same street. Playing together since sixteen.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Wade Morrison</strong> — lead vocals, rhythm guitar. Red clay and pine trees in every syllable.</li>
+        <li><strong>Bobby Ray</strong> — lead guitar. The musical brain.</li>
+        <li><strong>Jimmy</strong> — second lead guitar. Three guitars because one was never enough.</li>
+        <li><strong>Curtis</strong> — bass. Quiet. Solid. Holds it like a mountain.</li>
+        <li><strong>Earl</strong> — drums. Drives it like a train.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Atlanta made them before music made them. Thirty years on the same road. The same five people. No lineup changes. No breaks. They came to the Crown for the Crown — the only band in the Palace who came specifically for the prize. They closed Night One like they owned it.</p>
+        <p>A corrupt promoter manipulated the votes to put them in the top five without their knowledge or consent. Lydia discovered it and removed them. The Last Mile were innocent — she knew it before anyone else did, and made the call that cleared them within minutes. Wade Morrison and his four people were cleared, and The Unannounced — who had every reason not to — offered them the stage for one last song.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li><em>Georgia In My Hands</em> — Atlanta, thirty years of red clay and pine trees.</li>
+        <li><em>Still Burning</em> — the hunger, the fire, thirty years and no signs of stopping.</li>
+        <li><em>Just Getting Started</em> — the closing Night One song, the Palace erupting.</li>
+        <li><em>We Know</em> — the last song. Five people who never doubted themselves.</li>
+      </ul>
+
+      <p class="band-crown-result">Crown Result: Disqualified Night Two — vote manipulation discovered, cleared of involvement, offered the stage by The Unannounced.</p>
+      <p class="band-connection">The cost of someone else's ambition. The dignity of thirty years of honest music.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SECTION II: PALACE LEGACY -->
+<!-- ============================================= -->
+<section class="band-section" id="palace-legacy">
+  <div class="band-section-inner">
+    <p class="band-section-label">The Palace</p>
+    <h2 class="band-section-title">Legacy & Debuts</h2>
+
+    <!-- THE OPEN FIELD -->
+    <div class="band-card" id="the-open-field">
+      <p class="band-card-genre">Country Rock — Americana bones, electric teeth</p>
+      <h3 class="band-card-name">The Open Field</h3>
+      <p class="band-card-meta">Origin: The cornfields. A small town nobody outside the region knows.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li>Three guitars that sound like one decision. Made in a cornfield. Never questioned since.</li>
+        <li>The third member — the only one not originally from the town. Took him three years to fit. Now nobody remembers he wasn't always there.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Three boys who grew up on the same land, under the same wide sky. While other kids went to bars they went to the barn. They loaded one truck — instruments in the back, enough money for fuel and not much else — and drove. The town thought they were crazy. The town has their albums on the shelf.</p>
+        <p>They were originally planned for the Fifth Crown but were replaced by Al-Matar. Their three Crown songs — <em>Cornfield Gospel</em>, <em>Wide Open</em>, <em>Good Black Earth</em> — are saved for a future bonus album.</p>
+      </div>
+
+      <p class="band-connection">Three boys from the land carrying the Americana tradition into the Palace universe. Made their in-universe debut at The Palace — Christmas.</p>
+    </div>
+
+    <!-- MARCUS -->
+    <div class="band-card" id="marcus">
+      <p class="band-card-genre">Blues / Roots Rock</p>
+      <h3 class="band-card-name">Marcus</h3>
+      <p class="band-card-meta">Origin: Unknown. Winner of the First Crown, twenty years before the Fifth. Della's resident bandleader for twenty-two Saturday nights a year, every year.</p>
+
+      <div class="band-story">
+        <p>What Marcus did with his First Crown World Tour became Della's — a juke joint he built and ran, giving a stage to people who needed one. He was good enough to have gone somewhere and chose not to — a choice he has never fully explained, even to himself, but twenty-two years at Della's is its own kind of answer.</p>
+        <p>He and Della built an understanding over decades — two people who chose the same place for their own private reasons and never needed to explain it. On the last Saturday night, a visiting rock n' roll band's frontman offered to hold the set while Marcus got a cold one — "let us," not "may I." Marcus laughed the kind of laugh that's been somewhere, and said: "All right, kid. Let's see if your hands are as good as mine." He let them in. Not generosity. Recognition. That band became The Unannounced.</p>
+        <p>He appeared at the Palace on Night One, between The Unannounced and The Last Mile — Ray forgot to speak, Eddie forgot to be funny. On Night Two, after the Crown was awarded, he and Lydia stayed behind in the empty Palace. She asked him the question that started everything — "What do you hear when the room is empty?" He answered in music. They made a plan together.</p>
+      </div>
+
+      <p class="band-sound-title">Sound</p>
+      <ul class="band-sound-list">
+        <li>Texas Blues / Chicago Blues — warm, unhurried, authoritative, a guitar that talks instead of shouts.</li>
+        <li><em>Right Here</em> — his song at Della's. Not "I Stayed," not "This Is My Life." Just Right Here. This is where I chose to be. This is enough.</li>
+      </ul>
+
+      <p class="band-connection">The spine connecting Della's, The Unannounced, and The Palace. A timeless figure alongside Lydia and the Woman.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SECTION III: THE NEWEST VOICES -->
+<!-- ============================================= -->
+<section class="band-section" id="newest-voices">
+  <div class="band-section-inner">
+    <p class="band-section-label">Beyond the Crown</p>
+    <h2 class="band-section-title">The Newest Voices</h2>
+
+    <!-- ONIBI -->
+    <div class="band-card" id="onibi">
+      <p class="band-card-genre">Japanese Heavy Metal · Power Metal</p>
+      <h3 class="band-card-name">鬼火 Onibi</h3>
+      <p class="band-card-meta">Origin: A mountain town in the shadow of an old castle ruin. Nobody remembers the castle's name anymore — only that it burned once, and the fire is still called onibi, the demon fire that walks the hills at night.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Kenji</strong> — lead vocals. Trained for years in a shomyo (Buddhist chant) lineage before ever picking up a microphone — can drop from a full metal belt into a low ritual chant within a single bar.</li>
+        <li><strong>Ryota</strong> — lead guitar. Classically trained on shamisen before switching to electric at fourteen. Plays gallop riffs with the same right-hand snap a shamisen player uses.</li>
+        <li><strong>Sora</strong> — rhythm guitar, backing vocals. The quiet one. Writes most of the historical lyrics, buried in libraries and shrine archives when he's not on stage.</li>
+        <li><strong>Daichi</strong> — bass. Holds the low end like a temple bell holding a room.</li>
+        <li><strong>The Taiko Line</strong> — Hana, Mika, and Jun. Three dedicated taiko players positioned like a second rhythm section, not a novelty act.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Locals say Kenji's grandfather used to sing to the mountain — Kenji sings to the amps instead, but it's the same voice. Onibi carries the seven virtues of the samurai — Gi, Yu, Jin, Rei, Makoto, Meiyo, Chugi — across sixteen songs of justice, courage, mercy, respect, honesty, honor, and loyalty, taiko and shakuhachi threading beneath twin gallop guitars.</p>
+        <p>The album opens and closes on the same hillside, the same two armies who never clash — carrying the code into a battle whose outcome is left unresolved.</p>
+      </div>
+
+      <div class="band-quote">"Before the code, there is only the field."</div>
+      <p class="band-connection">Debut album <em>Fires on the Mountain</em> released 5 December 2026. The story continues in <strong>Sichi (七)</strong>, a companion album following a samurai survivor introduced on Track 15 — the same band's world, carried forward by one character who walked out of the fire.</p>
+    </div>
+
+    <!-- COCKPIT -->
+    <div class="band-card" id="cockpit">
+      <p class="band-card-genre">Maroon Rock</p>
+      <h3 class="band-card-name">Cockpit</h3>
+      <p class="band-card-meta">Origin: Cockpit Country, Jamaica's interior limestone highlands. Deliberately not reggae or ska. Theme: freedom taken, not given.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Kwame</strong> — lead vocals, Abeng horn. Accompong Maroon lineage.</li>
+        <li><strong>Ancilla</strong> — lead Nyabinghi bass drum. Was ready early — by fifteen she was leading rhythms adults had spent decades learning. Lets the drum answer instead of speaking in interviews.</li>
+        <li><strong>Solomon</strong> — repeater drum, percussion. The conversation to Ancilla's heartbeat. Trained formally in Kumina drumming from childhood, obsessed with rock drummers as a teenager — built the bridge between the two by ear, alone.</li>
+        <li><strong>Marva</strong> — guitar. Kwame's cousin, rock-trained. Came to the Maroon tradition sideways, as an adult, deliberately — the proof that the guitar belongs here, not a guest instrument.</li>
+        <li><strong>Desmond</strong> — bass. A working musician for twenty years before Cockpit existed. His grandfather fought a land dispute rooted in old Maroon treaty rights.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>Told to make tourist-friendly "island music," Cockpit refused and reached back instead to pre-reggae resistance drum traditions — Nyabinghi and Kumina hand-drum patterns under rock guitar, the Abeng cow-horn carried as lead melodic and signal voice, call-and-response warrior-cry vocals in place of melody-first songwriting.</p>
+        <p>Five people: one signal, two drummers speaking two languages of the same conversation, one guitar proving it belongs, one bass holding the frame together.</p>
+      </div>
+
+      <p class="band-connection">Made their in-universe debut at The Palace — Christmas.</p>
+    </div>
+
+    <!-- EL RAYO -->
+    <div class="band-card" id="el-rayo">
+      <p class="band-card-genre">Mariachi Rock</p>
+      <h3 class="band-card-name">El Rayo</h3>
+      <p class="band-card-meta">Origin: The festival circuit — a traditional mariachi family. Name means "the lightning strike" — the moment before the sound.</p>
+
+      <p class="band-members-title">Members</p>
+      <ul class="band-members-list">
+        <li><strong>Don Aurelio</strong> — vihuela. The patriarch. Holds the tradition the rest of the band was raised inside.</li>
+        <li><strong>Gabriel</strong> — trumpet, lead vocals. The scream, the fire made audible.</li>
+        <li><strong>Mateo</strong> — guitar. Don Aurelio's son. Spent years reaching for his father's instrument, believing his own the consolation prize — discovers it was the crown all along.</li>
+        <li><strong>Rafael</strong> — violin. Always halfway there — the bridge between traditional and electric.</li>
+        <li><strong>Jorge</strong> — guitarrón. The heartbeat, the low end.</li>
+      </ul>
+
+      <div class="band-story">
+        <p>El Rayo's core belief isn't fusion-as-compromise, it's revelation — rock didn't dilute the mariachi tradition, it revealed what was already latent in it. Their Día de los Muertos framing runs through everything: the ancestors aren't left behind by going electric. They're listening. They recognise the same fire.</p>
+      </div>
+
+      <div class="band-quote">"El Rayo don't cross between two worlds. They prove the two worlds were never separate."</div>
+      <p class="band-connection">Made their in-universe debut at The Palace — Christmas. Debut album releasing 16 January 2027.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Szilard Studios</div>
+  <div class="footer-tagline">Roads taken, roads found, roads that found you.</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Albums</a></li>
+    <li><a href="https://youtube.com/@The_Road_Universe" target="_blank">YouTube</a></li>
+    <li><a href="https://szilardstudios.gumroad.com" target="_blank">Downloads</a></li>
+    <li><a href="mailto:szilardstudios@gmail.com">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 Szilard Studios. All compositions original.</p>
+</footer>
+
+</body>
+</html>
