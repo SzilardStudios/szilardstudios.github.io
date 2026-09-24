@@ -1259,6 +1259,8 @@
   var ytPlayer;
   var radioPlaylistId = 'UUBwwA3t8yNiHXRzutlACIFg';
   var progressInterval;
+  var consecutiveRadioErrors = 0;
+  var radioHasEverPlayed = false;
 
   function loadYTAPI() {
     var tag = document.createElement('script');
@@ -1282,7 +1284,8 @@
         controls: 0,
         disablekb: 1,
         playsinline: 1,
-        rel: 0
+        rel: 0,
+        origin: window.location.origin
       },
       events: {
         'onReady': function(event) {
@@ -1308,8 +1311,14 @@
           event.target.playVideo();
         },
         'onStateChange': onPlayerStateChange,
-        'onError': function() {
-          document.getElementById('radio-track').textContent = 'Couldn\'t reach the radio — try refreshing';
+        'onError': function(event) {
+          consecutiveRadioErrors++;
+          if (ytPlayer && ytPlayer.nextVideo) {
+            ytPlayer.nextVideo();
+          }
+          if (consecutiveRadioErrors >= 5 && !radioHasEverPlayed) {
+            document.getElementById('radio-track').textContent = 'Having trouble finding a track — try the skip button';
+          }
         }
       }
     });
@@ -1317,6 +1326,8 @@
 
   function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
+      radioHasEverPlayed = true;
+      consecutiveRadioErrors = 0;
       updatePlayIcon(true);
       updateNowPlaying();
       startProgressSaver();
