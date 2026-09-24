@@ -641,6 +641,15 @@
     transition: all 0.2s ease;
   }
   .radio-btn:hover { background: rgba(255,255,255,0.28); border-color: var(--warm-white); }
+  .radio-btn-pulse {
+    animation: radioBtnPulse 1.2s ease-in-out infinite;
+    background: rgba(255,255,255,0.32);
+    border-color: var(--warm-white);
+  }
+  @keyframes radioBtnPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+    50% { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+  }
   .radio-toast {
     position: fixed;
     bottom: 78px; right: 1.2rem;
@@ -1261,6 +1270,7 @@
   var progressInterval;
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
+  var radioStartTimeout;
 
   function loadYTAPI() {
     var tag = document.createElement('script');
@@ -1309,6 +1319,11 @@
             }, 300);
           }
           event.target.playVideo();
+          radioStartTimeout = setTimeout(function () {
+            if (!radioHasEverPlayed) {
+              showManualStartPrompt();
+            }
+          }, 8000);
         },
         'onStateChange': onPlayerStateChange,
         'onError': function(event) {
@@ -1328,6 +1343,7 @@
     if (event.data === YT.PlayerState.PLAYING) {
       radioHasEverPlayed = true;
       consecutiveRadioErrors = 0;
+      clearTimeout(radioStartTimeout);
       updatePlayIcon(true);
       updateNowPlaying();
       startProgressSaver();
@@ -1337,6 +1353,13 @@
     } else if (event.data === YT.PlayerState.CUED) {
       updateNowPlaying();
     }
+  }
+
+  function showManualStartPrompt() {
+    var trackEl = document.getElementById('radio-track');
+    var playBtn = document.getElementById('radio-play');
+    if (trackEl) trackEl.textContent = 'Tap ▶ to start the radio';
+    if (playBtn) playBtn.classList.add('radio-btn-pulse');
   }
 
   function startProgressSaver() {
@@ -1386,6 +1409,7 @@
     loadYTAPI();
 
     document.getElementById('radio-play').addEventListener('click', function () {
+      this.classList.remove('radio-btn-pulse');
       if (!ytPlayer || !ytPlayer.getPlayerState) return;
       var state = ytPlayer.getPlayerState();
       if (state === YT.PlayerState.PLAYING) {
