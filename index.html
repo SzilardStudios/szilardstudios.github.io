@@ -2213,6 +2213,7 @@
     ytPlayer = new YT.Player('yt-player-iframe', {
       height: '44',
       width: '44',
+      host: 'https://www.youtube-nocookie.com',
       playerVars: {
         listType: 'playlist',
         list: radioPlaylistId,
@@ -2335,9 +2336,22 @@
   document.addEventListener('DOMContentLoaded', function () {
     loadYTAPI();
 
+    setTimeout(function () {
+      if (!ytPlayer) {
+        var trackEl = document.getElementById('radio-track');
+        if (trackEl) trackEl.textContent = 'Radio blocked — check for an ad blocker or privacy extension';
+        var playBtn = document.getElementById('radio-play');
+        if (playBtn) playBtn.classList.remove('radio-btn-pulse');
+      }
+    }, 6000);
+
     document.getElementById('radio-play').addEventListener('click', function () {
       this.classList.remove('radio-btn-pulse');
-      if (!ytPlayer || !ytPlayer.getPlayerState) return;
+      if (!ytPlayer || !ytPlayer.getPlayerState) {
+        var trackEl = document.getElementById('radio-track');
+        if (trackEl) trackEl.textContent = 'Radio blocked — check for an ad blocker or privacy extension';
+        return;
+      }
       var state = ytPlayer.getPlayerState();
       if (state === YT.PlayerState.PLAYING) {
         ytPlayer.pauseVideo();
