@@ -394,6 +394,31 @@
     margin-bottom: 1.2rem;
     line-height: 1.7;
   }
+  .personal-note {
+    background: rgba(196,136,42,0.07);
+    border: 1px dashed var(--dust);
+    border-radius: 2px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.2rem;
+  }
+  .personal-note p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--ash);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .personal-note-sig {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: 'Crimson Text', serif;
+    font-style: normal;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber-deep);
+  }
   .album-actions { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1rem; }
   .album-listen { display: flex; gap: 0.6rem; }
   .album-downloads { border-top: 1px solid var(--parchment-dark); padding-top: 0.8rem; }
@@ -844,6 +869,10 @@
         <p class="album-subtitle">Double Album · Her Road | His Road</p>
         <p class="album-desc">Two complete, standalone records telling the same story from opposite sides of the highway. Her Road follows a young woman certain she has everything figured out. His Road follows a young man certain he needs nothing at all. Neither of them is right. Neither of them knows it yet. Both roads lead to the same place.</p>
         <div class="album-quote">"Play both together, in order, and let them find each other."</div>
+        <div class="personal-note">
+          <p>This was the first album — the beginning of the learning curve. Not the strongest in the catalog, but the one everything else grew out of. Part of the Road Universe, and part of me.</p>
+          <span class="personal-note-sig">— Szilard</span>
+        </div>
         <div class="album-actions">
           <div class="album-listen" style="flex-wrap:wrap; gap:0.5rem;">
             <a href="https://youtube.com/playlist?list=PL14n1K54EjjxPAP5UUlerLkDD93BqG9Bl" target="_blank" class="btn btn-primary">▶ Her Road</a>
@@ -2194,7 +2223,6 @@
 <script>
   var ytPlayer;
   var radioPlaylistId = 'UUBwwA3t8yNiHXRzutlACIFg';
-  var progressInterval;
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
   var radioStartTimeout;
@@ -2236,16 +2264,6 @@
             event.target.unMute();
             updateMuteIcon(false);
           }
-          var savedIndex = parseInt(localStorage.getItem('radioIndex') || '0', 10);
-          var savedTime = parseFloat(localStorage.getItem('radioTime') || '0');
-          if (savedIndex > 0) {
-            setTimeout(function () {
-              event.target.playVideoAt(savedIndex);
-              if (savedTime > 0) {
-                setTimeout(function () { event.target.seekTo(savedTime, true); }, 500);
-              }
-            }, 300);
-          }
           event.target.playVideo();
           radioStartTimeout = setTimeout(function () {
             if (!radioHasEverPlayed) {
@@ -2274,10 +2292,8 @@
       clearTimeout(radioStartTimeout);
       updatePlayIcon(true);
       updateNowPlaying();
-      startProgressSaver();
     } else if (event.data === YT.PlayerState.PAUSED) {
       updatePlayIcon(false);
-      stopProgressSaver();
     } else if (event.data === YT.PlayerState.CUED) {
       updateNowPlaying();
     }
@@ -2289,19 +2305,6 @@
     if (trackEl) trackEl.textContent = 'Tap ▶ to start the radio';
     if (playBtn) playBtn.classList.add('radio-btn-pulse');
   }
-
-  function startProgressSaver() {
-    stopProgressSaver();
-    progressInterval = setInterval(function () {
-      if (ytPlayer && ytPlayer.getCurrentTime) {
-        try {
-          localStorage.setItem('radioTime', ytPlayer.getCurrentTime());
-          localStorage.setItem('radioIndex', ytPlayer.getPlaylistIndex());
-        } catch (e) {}
-      }
-    }, 3000);
-  }
-  function stopProgressSaver() { clearInterval(progressInterval); }
 
   function updateNowPlaying() {
     if (!ytPlayer || !ytPlayer.getVideoData) return;
