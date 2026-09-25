@@ -2222,7 +2222,7 @@
 
 <script>
   var ytPlayer;
-  var radioPlaylistId = 'UUBwwA3t8yNiHXRzutlACIFg';
+  var radioPlaylistId = 'PLXLXsLMekRqM'; // "Road Radio" — the curated public playlist
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
   var radioStartTimeout;
@@ -2251,6 +2251,7 @@
         disablekb: 1,
         playsinline: 1,
         rel: 0,
+        loop: 1,
         origin: window.location.origin
       },
       events: {
@@ -2296,6 +2297,15 @@
       updatePlayIcon(false);
     } else if (event.data === YT.PlayerState.CUED) {
       updateNowPlaying();
+    } else if (event.data === YT.PlayerState.ENDED) {
+      // Safety net — loop:1 should prevent this, but if the player ever
+      // genuinely runs out of playlist, reshuffle and keep the radio going
+      // rather than showing a dead "replay" state.
+      if (ytPlayer && ytPlayer.cuePlaylist) {
+        ytPlayer.cuePlaylist(radioPlaylistId);
+        ytPlayer.setShuffle(true);
+        ytPlayer.playVideo();
+      }
     }
   }
 
