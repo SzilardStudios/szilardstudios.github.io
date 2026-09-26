@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Road Radio Bridge</title>
+</head>
+<body style="margin:0; background:#000;">
+<div id="yt-player-iframe"></div>
+<script>
+  // Road Radio — bridge page
+  //
+  // This page exists for one reason: a Chrome extension page can never
+  // properly embed YouTube directly (extension pages don't send a normal
+  // web Referrer header, and YouTube requires one to identify the
+  // embedder — without it, videos are marked unplayable). A real webpage
+  // like this one doesn't have that restriction, so it does the actual
+  // embedding, and just relays play/pause/skip/mute/state back and forth
+  // with the extension via postMessage.
+
+  var ytPlayer;
+  var radioPlaylistId = 'PLXLXsLMekRqM';      // "Road Radio" — the full curated catalog
+  var newReleasePlaylistId = 'PLPqJjW2SrebE'; // "New Release" — always the current album
+  var radioInNewRelease = false;
+
+  function getQueryParam(name) {
+    var params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  function loadYTAPI() {
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  }
+
+  window.onYouTubeIframeAPIReady = function () {
+    var startMuted = getQueryParam('muted') !== 'false'; // default true
+
+    ytPlayer = new YT.Player('yt-player-iframe', {
+      height: '1',
+      width: '1',
+      playerVars: {
+        listType: 'playlist',
+        list: radioPlaylistId,
+        autoplay: 1,
+        mute: startMuted ? 1 : 0,
+        controls: 0,
+        disablekb: 1,
+        playsinline: 1,
+        rel: 0,
+        loop: 1
+      },
+      events: {
+        'onReady': function (event) {
+          event.target.setShuffle(true);
+          if (startMuted) {
+            event.target.mute();
+          } else {
+            event.target.unMute();
+          }
+          event.target.playVideo();
+          broadcastState();
+        },
+        'onStateChange': onPlayerStateChange,
+        'onError': function (event) {
+          if (ytPlayer && ytPlayer.nextVideo) ytPlayer.nextVideo();
+        }
+      }
+    });
+  };
+
+  function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.PLAYING) {
+      broadcastState();
+    } else if (event.data === YT.PlayerState.PAUSED) {
+      broadcastState();
+    } else if (event.data === YT.PlayerState.CUED) {
+      broadcastState();
+    } else if (event.data === YT.PlayerState.ENDED) {
+      handleTrackEnded();
+    }
+  }
+
+  function handleTrackEnded() {
+    if (!ytPlayer || !ytPlayer.cuePlaylist) return;
+    if (radioInNewRelease) {
+      radioInNewRelease = false;
+      ytPlayer.cuePlaylist(radioPlaylistId);
+    } else if (Math.random() < 0.2) {
+      radioInNewRelease = true;
+      ytPlayer.cuePlaylist(newReleasePlaylistId);
+    } else {
+      ytPlayer.cuePlaylist(radioPlaylistId);
+    }
+    ytPlayer.setShuffle(true);
+    ytPlayer.playVideo();
+  }
+
+  function broadcastState() {
+    if (!ytPlayer || !ytPlayer.getPlayerState) return;
+    var data = ytPlayer.getVideoData ? ytPlayer.getVideoData() : {};
+    var state = ytPlayer.getPlayerState();
+    sendToParent({
+      type: 'state',
+      playing: state === YT.PlayerState.PLAYING,
+      muted: ytPlayer.isMuted ? ytPlayer.isMuted() : true,
+      title: data && data.title ? data.title : 'Tuning in...',
+      videoId: data && data.video_id ? data.video_id : null
+    });
+  }
+
+  function sendToParent(message) {
+    if (window.parent) {
+      window.parent.postMessage(message, '*');
+    }
+  }
+
+  window.addEventListener('message', function (event) {
+    var msg = event.data;
+    if (!msg || !msg.cmd || !ytPlayer) return;
+
+    if (msg.cmd === 'toggle-play') {
+      var state = ytPlayer.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) {
+        ytPlayer.pauseVideo();
+      } else {
+        ytPlayer.playVideo();
+      }
+    } else if (msg.cmd === 'next') {
+      ytPlayer.nextVideo();
+    } else if (msg.cmd === 'toggle-mute') {
+      if (ytPlayer.isMuted()) {
+        ytPlayer.unMute();
+      } else {
+        ytPlayer.mute();
+      }
+      broadcastState();
+    } else if (msg.cmd === 'request-state') {
+      broadcastState();
+    }
+  });
+
+  loadYTAPI();
+</script>
+</body>
+</html>
