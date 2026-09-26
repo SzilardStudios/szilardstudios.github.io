@@ -570,6 +570,74 @@
   .form-note { font-size: 0.85rem; font-style: italic; color: var(--ash); margin-top: 0.3rem; }
   .form-success { display: none; background: var(--warm-white); border-left: 3px solid var(--amber); padding: 1.2rem 1.5rem; font-family: 'IM Fell English', serif; font-style: italic; color: var(--sepia); font-size: 1.05rem; margin-top: 1rem; }
   @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* --- BAND PROFILE PAGE --- */
+  .bands-hero { padding: 8rem 1.5rem 3rem; text-align: center; }
+  .bands-hero-eyebrow { font-family: 'Crimson Text', serif; font-size: 0.85rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber-deep); margin-bottom: 1rem; }
+  .bands-hero-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 400; color: var(--ink); line-height: 1.15; margin-bottom: 1.2rem; }
+  .bands-hero-desc { font-family: 'Crimson Text', serif; font-size: 1.1rem; color: var(--ink-soft); max-width: 640px; margin: 0 auto; line-height: 1.8; }
+  .bands-back { display: inline-block; margin-top: 1.8rem; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber-deep); text-decoration: none; border-bottom: 1px solid var(--amber-deep); padding-bottom: 2px; }
+  .bands-back:hover { color: var(--amber); border-color: var(--amber); }
+
+  .band-jump-nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; max-width: 900px; margin: 2.5rem auto 0; }
+  .band-jump-nav a { padding: 0.45rem 1rem; border: 1px solid var(--parchment-dark); font-family: 'Crimson Text', serif; font-size: 0.82rem; color: var(--sepia); text-decoration: none; background: var(--warm-white); transition: all 0.25s ease; }
+  .band-jump-nav a:hover { border-color: var(--amber); color: var(--amber-deep); }
+
+  .band-section { border-top: 1px solid var(--parchment-dark); padding: 4rem 1.5rem; }
+  .band-section-inner { max-width: 900px; margin: 0 auto; }
+  .band-section-label { font-family: 'Crimson Text', serif; font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem; }
+  .band-section-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; color: var(--ink); margin-bottom: 2.5rem; }
+
+  .band-card { background: var(--warm-white); border: 1px solid var(--parchment-dark); padding: 2.2rem 2.5rem; margin-bottom: 2rem; scroll-margin-top: 90px; }
+  .band-card-genre { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem; }
+  .band-card-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; color: var(--ink); line-height: 1.2; margin-bottom: 0.3rem; }
+  .band-card-meta { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; color: var(--ash); margin-bottom: 1.5rem; }
+
+  .band-members-title { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sepia); margin: 1.5rem 0 0.7rem; }
+  .band-members-list { list-style: none; }
+  .band-members-list li { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.5rem; }
+  .band-members-list li strong { color: var(--ink); font-weight: 600; }
+
+  .band-story p { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.85; margin-bottom: 1rem; }
+
+  .band-sound-title { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sepia); margin: 1.5rem 0 0.7rem; }
+  .band-sound-list { list-style: none; }
+  .band-sound-list li { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; margin-bottom: 0.5rem; }
+  .band-sound-list li em { font-family: 'IM Fell English', serif; font-style: italic; color: var(--sepia); }
+
+  .band-quote { font-family: 'IM Fell English', serif; font-style: italic; font-size: 1rem; color: var(--sepia); border-left: 2px solid var(--amber); padding-left: 1rem; margin: 1.5rem 0; line-height: 1.7; }
+
+  .band-crown-result { display: inline-block; margin-top: 0.5rem; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--amber-deep); font-weight: 600; }
+  .band-connection { margin-top: 1rem; font-size: 0.88rem; font-style: italic; color: var(--ash); border-top: 1px solid var(--parchment-dark); padding-top: 1rem; }
+
+  .place-teaser {
+    margin-top: 1.2rem;
+    padding: 0.9rem 1.1rem;
+    background: rgba(196,136,42,0.07);
+    border-left: 2px dashed var(--amber);
+    border-radius: 2px;
+  }
+  .place-teaser-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--amber-deep);
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', serif;
+  }
+  .place-teaser p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .band-card { padding: 1.8rem 1.5rem; }
+    .bands-hero-title { font-size: 2.2rem; }
+  }
 </style>
 </head>
 <body>
@@ -607,8 +675,11 @@
     <a href="#onibi">Onibi</a>
     <a href="#cockpit">Cockpit</a>
     <a href="#el-rayo">El Rayo</a>
+    <a href="#the-crossing-place" style="border-color: var(--amber); color: var(--amber-deep);">The Crossing</a>
+    <a href="#dellas-place" style="border-color: var(--amber); color: var(--amber-deep);">Della's</a>
     <a href="#the-palace" style="border-color: var(--amber); color: var(--amber-deep);">The Palace</a>
     <a href="#the-embassy" style="border-color: var(--amber); color: var(--amber-deep);">The Embassy Theatre</a>
+    <a href="#the-hotel-place" style="border-color: var(--amber); color: var(--amber-deep);">The Hotel</a>
   </div>
 </div>
 
@@ -1069,6 +1140,50 @@
     <h2 class="band-section-title">The Places</h2>
     <p style="color: var(--ink-soft); font-size: 0.98rem; line-height: 1.85; margin-bottom: 2.5rem;">The bands move. Some places don't. The Crossing, Della's, The Palace, and The Hotel are the static points the Road Universe keeps returning to — rooms and roads that outlast whoever passes through them. This section will grow to hold all of them.</p>
 
+    <!-- THE CROSSING -->
+    <div class="band-card" id="the-crossing-place">
+      <p class="band-card-genre">A Roadside Diner, Middle of Nowhere</p>
+      <h3 class="band-card-name">The Crossing</h3>
+      <p class="band-card-meta">Forty years and counting · Run by the Cook for the last twenty</p>
+
+      <div class="band-story">
+        <p>The diner had a life before the Cook ever pulled in. Whoever ran it before him kept it going for twenty years, then decided it was time to let it go. One evening, at the end of his own road, the Cook saw the For Sale sign and stopped. He's kept it running ever since — another twenty years and counting. Two owners, forty years, one name on the building: The Crossing.</p>
+        <p>Everyone who ends up here is looking for the same thing — something they can't name, from someone who won't charge them for it. It's the kind of diner that could exist on any highway, and somehow keeps existing on all the ones that matter.</p>
+      </div>
+
+      <p class="band-members-title">What It Means</p>
+      <div class="band-story">
+        <p>The Cook speaks to customers only to say what's on the menu. Before the diner: unknown. Something happened. Something he did. The diner may be a sanctuary or a penance. Possibly both. He watches more than he talks, and everyone who's ever sat at that counter has felt watched in a way that isn't unkind.</p>
+        <p>The diner shows up far more often than its own album lets on. The Road of the Preacher and Origo cross paths here — after The Children and The Innocents unfold in their own separate albums, Ankura and the Preacher recognise each other from that same distant scene and sit down together, the Cook quietly present for the whole conversation. The Burnline stops here too, mid-tour, Eli talking with a man who gives away exactly as much as he means to and not a word more. And Marcus finds his way here as well — two men who never explain themselves to anyone, discovering they don't have to explain themselves to each other either. Word is it won't be the last band to find this counter before the night is over.</p>
+      </div>
+
+      <div class="band-quote">"Never just one."</div>
+
+      <p class="band-connection">Home of Album I — where the girl, the drifter, and the old couple's own night unfolds — and the exact point <em>The Lifetime Road</em> ends and hands off to. Also the physical crossing point for <em>Origo — Ananda</em> (Track 12, "The 3am Conversation," with The Road of the Preacher), <em>The Burnline — Carry the Fire</em> (Track 16, "Asked the Wrong Man"), and <em>Marcus — Best Of</em> ("Just a Blues," where Marcus meets the Cook).</p>
+    </div>
+
+    <!-- DELLA'S -->
+    <div class="band-card" id="dellas-place">
+      <p class="band-card-genre">A Juke Joint, Bethlehem</p>
+      <h3 class="band-card-name">Della's</h3>
+      <p class="band-card-meta">Forty years, built by Della and her late husband Ray</p>
+
+      <div class="band-story">
+        <p>Della and Ray built this place with their own hands — clapboard walls, a corrugated iron roof that turns rain into its own percussion section, Christmas lights strung up once and never taken down, a bar wiped smooth as skin over decades of use. The highway that used to run past it got rerouted years ago, and the town it serves, Bethlehem, has been shrinking ever since — half the storefronts dark, the young people gone. Della's kept going anyway, one Saturday night at a time, for forty years.</p>
+        <p>It's the kind of room that draws people in rather than the other way around — a working man's stage with nothing to prove, which is exactly why the people who matter most in this universe keep finding it.</p>
+      </div>
+
+      <p class="band-members-title">What It Means</p>
+      <div class="band-story">
+        <p>Marcus played this stage every Saturday for twenty-two years running — the longest anyone can remember one act holding one room. He was good enough to have gone somewhere else entirely and chose not to, a decision he's never fully explained, even to himself. The room seems to draw that kind of quiet, deliberate staying-power out of people.</p>
+        <p>It's also the kind of place that finds you rather than the other way around. The Road of the Preacher passed through in its prime, years before anyone was thinking about closing nights — Ray still behind the bar, the Preacher staying until the last song and tipping his hat on the way out. Earl, the regular who's been coming since Ray was alive, still carries a vague memory of a stranger who sat in the corner all night just listening.</p>
+      </div>
+
+      <div class="band-quote">"The bar gets wiped. The story continues."</div>
+
+      <p class="band-connection">The full story of Della's closing night — Simone's return, the chain that quietly pulled out, and everything Della decided not to say — is told across the <em>Della's</em> album itself. This page just remembers the room: twenty-two years of Marcus's Saturdays, the night The Unannounced were discovered here, and one quiet, unremarked visit from <em>The Road of the Preacher</em>, years before any of it.</p>
+    </div>
+
     <!-- THE PALACE -->
     <div class="band-card" id="the-palace">
       <p class="band-card-genre">Location Undisclosed</p>
@@ -1125,6 +1240,33 @@
       </ul>
 
       <p class="band-connection">The Burnline's <em>Carry the Fire (Live at The Embassy)</em> — releasing 27 February 2027 — is a homecoming show recorded on this stage — not to prove anything to strangers, but to find out if the room still claims Eli as one of its own.</p>
+    </div>
+
+    <!-- THE HOTEL -->
+    <div class="band-card" id="the-hotel-place">
+      <p class="band-card-genre">A Roadside Hotel, The American Highway</p>
+      <h3 class="band-card-name">The Hotel</h3>
+      <p class="band-card-meta">One roof, every light on · Run by the Manager</p>
+
+      <div class="band-story">
+        <p>It sits exactly where the highway expects a hotel to sit — the kind of building that could be anywhere, which is the point. Twenty-one rooms, twenty-one lives passing through on what the Manager keeps calling a quiet day. The road always has a better idea.</p>
+        <p>Nobody who checks in here is really just checking in. A hotel corridor at night is its own kind of confession booth — thin walls, closed doors, everyone assuming nobody else can hear them being honest.</p>
+      </div>
+
+      <p class="band-members-title">What It Means</p>
+      <div class="band-story">
+        <p>The Manager runs the place the way anyone runs something they've stopped being surprised by — steady, a little resigned, quietly attentive to what's actually happening under his own roof. He's said "quiet day" enough times to know better than to mean it.</p>
+        <p>It's also proof that even a single day, in a single building, can hold the same weight as the biggest crossings in this universe. The Cook passes through here too, on his own road, years before the diner (Track 9, "My House Old Man") — and the Preacher plays one of his own songs live from this same building (Track 16, "Fuel For The Road," shared with his own album).</p>
+      </div>
+
+      <div class="band-quote">"Every road in the world had been pointed right here all along."</div>
+
+      <p class="band-connection">The full ensemble — twenty-one rooms, twenty-one stories, one day — is told across <em>The Hotel</em> album itself. This page just remembers the building: one of the Cook's stops on his own long road, and the room the Preacher borrowed for a night.</p>
+
+      <div class="place-teaser">
+        <p class="place-teaser-label">Coming Next</p>
+        <p>Across the quiet years and the empty-room Tuesdays, one weekend finally broke the pattern — somebody booked the Corner Suite for the whole weekend. A movie star, back to get married in the one building she never forgot. Everybody at The Hotel remembers her; nobody forgets a face like that walking back through that lobby. A second album is already taking shape around what happened that weekend.</p>
+      </div>
     </div>
 
   </div>
