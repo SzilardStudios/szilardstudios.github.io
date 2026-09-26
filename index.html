@@ -2228,6 +2228,8 @@
 <script>
   var ytPlayer;
   var radioPlaylistId = 'PLXLXsLMekRqM'; // "Road Radio" — the curated public playlist
+  var newReleasePlaylistId = 'PLPqJjW2SrebE'; // "New Release" — always the current album, weighted extra plays
+  var radioInNewRelease = false;
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
   var radioStartTimeout;
@@ -2303,14 +2305,31 @@
     } else if (event.data === YT.PlayerState.CUED) {
       updateNowPlaying();
     } else if (event.data === YT.PlayerState.ENDED) {
-      // Safety net — loop:1 should prevent this, but if the player ever
-      // genuinely runs out of playlist, reshuffle and keep the radio going
-      // rather than showing a dead "replay" state.
-      if (ytPlayer && ytPlayer.cuePlaylist) {
-        ytPlayer.cuePlaylist(radioPlaylistId);
-        ytPlayer.setShuffle(true);
-        ytPlayer.playVideo();
-      }
+      handleRadioTrackEnded();
+    }
+  }
+
+  function handleRadioTrackEnded() {
+    if (!ytPlayer || !ytPlayer.cuePlaylist) return;
+    if (radioInNewRelease) {
+      // Just finished a New Release track — rejoin the full catalog.
+      radioInNewRelease = false;
+      ytPlayer.cuePlaylist(radioPlaylistId);
+      ytPlayer.setShuffle(true);
+      ytPlayer.playVideo();
+      return;
+    }
+    // Roughly 1-in-5 chance to dip into the newest release, giving it
+    // extra rotation beyond what its size alone would earn in the shuffle.
+    if (Math.random() < 0.2) {
+      radioInNewRelease = true;
+      ytPlayer.cuePlaylist(newReleasePlaylistId);
+      ytPlayer.setShuffle(true);
+      ytPlayer.playVideo();
+    } else {
+      ytPlayer.cuePlaylist(radioPlaylistId);
+      ytPlayer.setShuffle(true);
+      ytPlayer.playVideo();
     }
   }
 
