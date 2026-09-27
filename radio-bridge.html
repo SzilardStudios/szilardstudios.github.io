@@ -127,6 +127,10 @@
   // YouTube's own playlist+loop auto-advance doesn't reliably fire a
   // distinct "ended" event per track, so polling catches every change
   // regardless of how it happened internally.
+  var suppressUntil = 0; // timestamp — a handoff forces its own track change
+                          // via nextVideo(), which this window absorbs so it
+                          // isn't mistaken for a second, unrelated track-end
+
   function startTrackWatcher() {
     setInterval(function () {
       var p = activePlayer();
@@ -134,7 +138,7 @@
       var data = p.getVideoData();
       var vid = data && data.video_id;
       if (!vid) return;
-      if (lastKnownVideoId === null) {
+      if (lastKnownVideoId === null || Date.now() < suppressUntil) {
         lastKnownVideoId = vid;
         return;
       }
@@ -171,6 +175,7 @@
     var p = toA ? playerA : playerB;
     if (p && p.nextVideo) p.nextVideo();
     lastKnownVideoId = null; // next poll captures that fresh track as the new baseline
+    suppressUntil = Date.now() + 4000; // absorb the nextVideo() transition itself
     broadcastState();
   }
 
