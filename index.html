@@ -2279,7 +2279,9 @@
 
 <!-- ROAD RADIO -->
 <div class="radio-bar" id="radio-bar">
-  <div class="radio-thumb-wrap" id="yt-player-iframe"></div>
+  <div class="radio-thumb-wrap">
+    <img id="radio-thumb" src="" alt="" style="width:100%; height:100%; object-fit:cover; display:block;">
+  </div>
   <div class="radio-info">
     <p class="radio-label"><span class="radio-live-dot"></span> Road Radio</p>
     <p class="radio-track" id="radio-track">Tuning in...</p>
@@ -2291,12 +2293,21 @@
   </div>
 </div>
 <div class="radio-toast" id="radio-toast">🎵 Road Radio is playing in the background — tap 🔇 to turn on the sound.</div>
+<div id="yt-player-a" style="position:fixed; bottom:0; left:0; width:1px; height:1px; overflow:hidden;"></div>
+<div id="yt-player-b" style="position:fixed; bottom:0; left:0; width:1px; height:1px; overflow:hidden;"></div>
 
 <script>
-  var ytPlayer;
+  // Runs TWO players simultaneously — one locked to Road Radio, one locked
+  // to New Release — rather than reloading a single player's playlist
+  // mid-stream. Repeated testing showed cuePlaylist()/loadPlaylist() are
+  // unreliable once a player is already playing. Muting one and unmuting
+  // the other is simple and reliable, so "switching" is just that — a mute
+  // toggle between two players that are both quietly running the whole time.
   var radioPlaylistId = 'PLXLXsLMekRqM'; // "Road Radio" — the curated public playlist
   var newReleasePlaylistId = 'PLPqJjW2SrebE'; // "New Release" — always the current album, weighted extra plays
-  var radioInNewRelease = false;
+  var playerA, playerB; // A = Road Radio, B = New Release
+  var playerAReady = false, playerBReady = false;
+  var activeIsA = true;
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
   var radioStartTimeout;
@@ -2309,19 +2320,16 @@
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   }
 
-  window.onYouTubeIframeAPIReady = function() {
-    var storedMuted = localStorage.getItem('radioMuted');
-    var startMuted = storedMuted === null ? true : storedMuted === 'true';
-
-    ytPlayer = new YT.Player('yt-player-iframe', {
-      height: '44',
-      width: '44',
+  function makeRadioPlayer(elementId, playlistId) {
+    return new YT.Player(elementId, {
+      height: '1',
+      width: '1',
       host: 'https://www.youtube-nocookie.com',
       playerVars: {
         listType: 'playlist',
-        list: radioPlaylistId,
+        list: playlistId,
         autoplay: 1,
-        mute: startMuted ? 1 : 0,
+        mute: 1, // both start muted — the real audible state is applied right after ready
         controls: 0,
         disablekb: 1,
         playsinline: 1,
@@ -2330,30 +2338,36 @@
         origin: window.location.origin
       },
       events: {
-        'onReady': function(event) {
+        'onReady': function (event) {
           event.target.setShuffle(true);
-          if (startMuted) {
-            event.target.mute();
-            updateMuteIcon(true);
-            showRadioToast();
-          } else {
-            event.target.unMute();
-            updateMuteIcon(false);
-          }
           event.target.playVideo();
-          startTrackWatcher();
-          startRadioWatchdog();
-          radioStartTimeout = setTimeout(function () {
-            if (!radioHasEverPlayed) {
-              showManualStartPrompt();
-            }
-          }, 8000);
+          if (elementId === 'yt-player-a') {
+            playerAReady = true;
+          } else {
+            playerBReady = true;
+          }
+          if (playerAReady && playerBReady) {
+            var storedMuted = localStorage.getItem('radioMuted');
+            var startMuted = storedMuted === null ? true : storedMuted === 'true';
+            masterMuted = startMuted;
+            applyMuteState();
+            updateMuteIcon(startMuted);
+            if (startMuted) showRadioToast();
+            startTrackWatcher();
+            startRadioWatchdog();
+            updateNowPlaying();
+            radioStartTimeout = setTimeout(function () {
+              if (!radioHasEverPlayed) {
+                showManualStartPrompt();
+              }
+            }, 8000);
+          }
         },
         'onStateChange': onPlayerStateChange,
-        'onError': function(event) {
+        'onError': function (event) {
           consecutiveRadioErrors++;
-          if (ytPlayer && ytPlayer.nextVideo) {
-            ytPlayer.nextVideo();
+          if (event.target && event.target.nextVideo) {
+            event.target.nextVideo();
           }
           if (consecutiveRadioErrors >= 5 && !radioHasEverPlayed) {
             document.getElementById('radio-track').textContent = 'Having trouble finding a track — try the skip button';
@@ -2361,7 +2375,32 @@
         }
       }
     });
+  }
+
+  var masterMuted = true;
+
+  window.onYouTubeIframeAPIReady = function() {
+    playerA = makeRadioPlayer('yt-player-a', radioPlaylistId);
+    playerB = makeRadioPlayer('yt-player-b', newReleasePlaylistId);
   };
+
+  function activeRadioPlayer() {
+    return activeIsA ? playerA : playerB;
+  }
+
+  // The active player follows the real (master) mute state. The inactive
+  // player is ALWAYS kept muted — it plays quietly in the background so
+  // it's instantly ready to take over, but must never be heard.
+  function applyMuteState() {
+    if (!playerAReady || !playerBReady) return;
+    if (activeIsA) {
+      masterMuted ? playerA.mute() : playerA.unMute();
+      playerB.mute();
+    } else {
+      masterMuted ? playerB.mute() : playerB.unMute();
+      playerA.mute();
+    }
+  }
 
   function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
@@ -2377,20 +2416,17 @@
     }
   }
 
-  // YouTube's own playlist+loop auto-advance moves from one video straight
-  // to the next internally without reliably firing a distinct "ended"
-  // state in between — so waiting for that event to inject a New Release
-  // track never actually triggers. Instead, poll for the video ID itself
-  // changing, which catches every track change regardless of how it happened.
+  // Poll whichever player is currently active for its video ID changing —
+  // YouTube's own playlist+loop auto-advance doesn't reliably fire a
+  // distinct "ended" event per track, so polling catches every change
+  // regardless of how it happened internally.
   var lastKnownVideoId = null;
-  var suppressUntil = 0; // timestamp — ignore all changes until this passes,
-                          // since a deliberate playlist switch can cause more
-                          // than one rapid video_id flicker, not just one
 
   function startTrackWatcher() {
     setInterval(function () {
-      if (!ytPlayer || !ytPlayer.getVideoData) return;
-      var data = ytPlayer.getVideoData();
+      var p = activeRadioPlayer();
+      if (!p || !p.getVideoData) return;
+      var data = p.getVideoData();
       var vid = data && data.video_id;
       if (!vid) return;
       if (lastKnownVideoId === null) {
@@ -2399,63 +2435,45 @@
       }
       if (vid !== lastKnownVideoId) {
         lastKnownVideoId = vid;
-        if (Date.now() < suppressUntil) {
-          console.log('[Radio] change ignored (within cooldown after our own switch)');
-          return;
-        }
         handleRadioTrackEnded();
       }
     }, 2000);
   }
 
-  function switchRadioTo(playlistId, label) {
-    console.log('[Radio] switching to', label, '- target ID:', playlistId, '(type:', typeof playlistId + ')');
-    suppressUntil = Date.now() + 6000; // ignore the next 6s of changes — long
-                                        // enough to absorb any flicker from the switch itself
-    // cuePlaylist() proved unreliable when called on an already-playing
-    // player — it would silently keep playing whatever was already loaded.
-    // loadPlaylist() loads AND plays in one atomic step, which actually
-    // forces the switch to take effect.
-    ytPlayer.loadPlaylist(playlistId);
-    ytPlayer.setShuffle(true);
-    setTimeout(function () {
-      if (ytPlayer && ytPlayer.getPlaylist) {
-        var list = ytPlayer.getPlaylist();
-        var activeId = ytPlayer.getPlaylistId ? ytPlayer.getPlaylistId() : 'n/a';
-        console.log('[Radio] after switching to', label, '— player reports active playlist ID:', activeId, '| loaded', list ? list.length : 0, 'videos, first ID:', list && list[0]);
-      }
-    }, 1500);
+  function handOffRadioTo(toA) {
+    activeIsA = toA;
+    lastKnownVideoId = null; // next poll just captures the newly-active player's current track as the baseline
+    applyMuteState();
+    updateNowPlaying();
   }
 
   function handleRadioTrackEnded() {
-    if (!ytPlayer || !ytPlayer.cuePlaylist) return;
-    if (radioInNewRelease) {
-      // Just finished a New Release track — rejoin the full catalog.
-      console.log('[Radio] finished a New Release track, rejoining Road Radio');
-      radioInNewRelease = false;
-      switchRadioTo(radioPlaylistId, 'Road Radio');
-      return;
+    if (activeIsA) {
+      // A track on Road Radio just finished naturally — roughly 1-in-5
+      // chance to hand off to New Release, which has been playing quietly
+      // in the background this whole time.
+      var roll = Math.random();
+      console.log('[Radio] weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> staying on Road Radio');
+      if (roll < 0.2) {
+        handOffRadioTo(false);
+      }
+    } else {
+      // A New Release track just finished — hand control back to Road Radio.
+      console.log('[Radio] finished a New Release track, handing back to Road Radio');
+      handOffRadioTo(true);
     }
-    // Roughly 1-in-5 chance to dip into the newest release, giving it
-    // extra rotation beyond what its size alone would earn in the shuffle.
-    var roll = Math.random();
-    console.log('[Radio] weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> staying on Road Radio');
-    if (roll < 0.2) {
-      radioInNewRelease = true;
-      switchRadioTo(newReleasePlaylistId, 'New Release');
-    }
-    // If the roll misses, do nothing — the current track is already
-    // playing fine on its own via the native playlist advance.
   }
 
-  // Self-healing watchdog — if playback isn't PLAYING and the user didn't
-  // deliberately pause it, something went wrong internally. Force a clean
-  // recovery onto Road Radio rather than leaving the radio silently dead.
+  // Self-healing watchdog — if the active player isn't PLAYING and the
+  // user didn't deliberately pause it, something went wrong internally.
+  // Force a clean recovery onto Road Radio rather than leaving the radio
+  // silently dead.
   var lastPlayingAt = Date.now();
   function startRadioWatchdog() {
     setInterval(function () {
-      if (!ytPlayer || !ytPlayer.getPlayerState) return;
-      if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+      var p = activeRadioPlayer();
+      if (!p || !p.getPlayerState) return;
+      if (p.getPlayerState() === YT.PlayerState.PLAYING) {
         lastPlayingAt = Date.now();
         return;
       }
@@ -2463,8 +2481,8 @@
       if (Date.now() - lastPlayingAt > 20000) {
         console.log('[Radio] watchdog: no playback for 20s and not user-paused — recovering');
         lastPlayingAt = Date.now();
-        radioInNewRelease = false;
-        switchRadioTo(radioPlaylistId, 'Road Radio (recovery)');
+        handOffRadioTo(true);
+        if (playerA && playerA.playVideo) playerA.playVideo();
       }
     }, 5000);
   }
@@ -2477,11 +2495,16 @@
   }
 
   function updateNowPlaying() {
-    if (!ytPlayer || !ytPlayer.getVideoData) return;
-    var data = ytPlayer.getVideoData();
+    var p = activeRadioPlayer();
+    if (!p || !p.getVideoData) return;
+    var data = p.getVideoData();
     if (data && data.title) {
       document.getElementById('radio-track').textContent = data.title;
-      console.log('[Radio] now playing:', data.title, '| in New Release mode:', radioInNewRelease);
+      console.log('[Radio] now playing:', data.title, '| active:', activeIsA ? 'Road Radio' : 'New Release');
+    }
+    if (data && data.video_id) {
+      var thumbEl = document.getElementById('radio-thumb');
+      if (thumbEl) thumbEl.src = 'https://img.youtube.com/vi/' + data.video_id + '/mqdefault.jpg';
     }
   }
 
@@ -2511,7 +2534,7 @@
     loadYTAPI();
 
     setTimeout(function () {
-      if (!ytPlayer) {
+      if (!playerAReady || !playerBReady) {
         var trackEl = document.getElementById('radio-track');
         if (trackEl) trackEl.textContent = 'Radio blocked — check for an ad blocker or privacy extension';
         var playBtn = document.getElementById('radio-play');
@@ -2521,37 +2544,34 @@
 
     document.getElementById('radio-play').addEventListener('click', function () {
       this.classList.remove('radio-btn-pulse');
-      if (!ytPlayer || !ytPlayer.getPlayerState) {
+      var p = activeRadioPlayer();
+      if (!p || !p.getPlayerState) {
         var trackEl = document.getElementById('radio-track');
         if (trackEl) trackEl.textContent = 'Radio blocked — check for an ad blocker or privacy extension';
         return;
       }
-      var state = ytPlayer.getPlayerState();
+      var state = p.getPlayerState();
       if (state === YT.PlayerState.PLAYING) {
         userPausedRadio = true;
-        ytPlayer.pauseVideo();
+        p.pauseVideo();
       } else {
         userPausedRadio = false;
-        ytPlayer.playVideo();
+        p.playVideo();
       }
     });
 
     document.getElementById('radio-next').addEventListener('click', function () {
-      if (ytPlayer && ytPlayer.nextVideo) ytPlayer.nextVideo();
+      var p = activeRadioPlayer();
+      if (p && p.nextVideo) p.nextVideo();
     });
 
     document.getElementById('radio-mute').addEventListener('click', function () {
-      if (!ytPlayer || !ytPlayer.isMuted) return;
-      if (ytPlayer.isMuted()) {
-        ytPlayer.unMute();
-        localStorage.setItem('radioMuted', 'false');
-        updateMuteIcon(false);
-        hideRadioToast();
-      } else {
-        ytPlayer.mute();
-        localStorage.setItem('radioMuted', 'true');
-        updateMuteIcon(true);
-      }
+      if (!playerAReady || !playerBReady) return;
+      masterMuted = !masterMuted;
+      applyMuteState();
+      localStorage.setItem('radioMuted', masterMuted ? 'true' : 'false');
+      updateMuteIcon(masterMuted);
+      if (!masterMuted) hideRadioToast();
     });
   });
 </script>
