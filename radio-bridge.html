@@ -61,6 +61,7 @@
           }
           event.target.playVideo();
           broadcastState();
+          startTrackWatcher();
         },
         'onStateChange': onPlayerStateChange,
         'onError': function (event) {
@@ -77,29 +78,60 @@
       broadcastState();
     } else if (event.data === YT.PlayerState.CUED) {
       broadcastState();
-    } else if (event.data === YT.PlayerState.ENDED) {
-      handleTrackEnded();
     }
   }
 
-  function handleTrackEnded() {
+  // YouTube's own playlist+loop auto-advance moves from one video straight
+  // to the next internally without reliably firing a distinct "ended"
+  // state in between — so waiting for that event to inject a New Release
+  // track never actually triggers. Instead, poll for the video ID itself
+  // changing, which catches every track change regardless of how it happened.
+  var lastKnownVideoId = null;
+  var suppressNextChange = false; // true right after we deliberately switch playlists ourselves
+
+  function startTrackWatcher() {
+    setInterval(function () {
+      if (!ytPlayer || !ytPlayer.getVideoData) return;
+      var data = ytPlayer.getVideoData();
+      var vid = data && data.video_id;
+      if (!vid) return;
+      if (lastKnownVideoId === null) {
+        lastKnownVideoId = vid;
+        return;
+      }
+      if (vid !== lastKnownVideoId) {
+        lastKnownVideoId = vid;
+        if (suppressNextChange) {
+          suppressNextChange = false;
+          return;
+        }
+        handleTrackChanged();
+      }
+    }, 2000);
+  }
+
+  function handleTrackChanged() {
     if (!ytPlayer || !ytPlayer.cuePlaylist) return;
     if (radioInNewRelease) {
       console.log('[Bridge] finished a New Release track, rejoining Road Radio');
       radioInNewRelease = false;
+      suppressNextChange = true;
       ytPlayer.cuePlaylist(radioPlaylistId);
-    } else {
-      var roll = Math.random();
-      console.log('[Bridge] track ended, weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> Road Radio');
-      if (roll < 0.2) {
-        radioInNewRelease = true;
-        ytPlayer.cuePlaylist(newReleasePlaylistId);
-      } else {
-        ytPlayer.cuePlaylist(radioPlaylistId);
-      }
+      ytPlayer.setShuffle(true);
+      ytPlayer.playVideo();
+      return;
     }
-    ytPlayer.setShuffle(true);
-    ytPlayer.playVideo();
+    var roll = Math.random();
+    console.log('[Bridge] weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> staying on Road Radio');
+    if (roll < 0.2) {
+      radioInNewRelease = true;
+      suppressNextChange = true;
+      ytPlayer.cuePlaylist(newReleasePlaylistId);
+      ytPlayer.setShuffle(true);
+      ytPlayer.playVideo();
+    }
+    // If the roll misses, do nothing — the current track is already
+    // playing fine on its own via the native playlist advance.
   }
 
   function broadcastState() {

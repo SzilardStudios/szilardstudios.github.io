@@ -524,6 +524,52 @@
   .support { border-top: 1px solid var(--parchment-dark); }
   .support-inner { max-width: 620px; margin: 0 auto; text-align: center; }
   .support p { color: var(--ink-soft); margin-bottom: 1rem; font-size: 1.05rem; }
+
+  .radio-info { border-top: 1px solid var(--parchment-dark); }
+  .radio-info-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .radio-info p { color: var(--ink-soft); margin-bottom: 1.1rem; font-size: 1.05rem; line-height: 1.8; }
+  .radio-info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(90deg, var(--sepia), var(--amber-deep));
+    color: var(--warm-white);
+    padding: 0.6rem 1.3rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 1rem 0 1.8rem;
+  }
+  .radio-info-live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #FF6A30;
+    animation: radioInfoPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes radioInfoPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.35); }
+  }
+  .radio-privacy {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--parchment-dark);
+    text-align: left;
+  }
+  .radio-privacy-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+    scroll-margin-top: 90px;
+  }
+  .radio-privacy p {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin-bottom: 0.8rem;
+  }
   footer {
     border-top: 1px solid var(--parchment-dark);
     padding: 3rem 2rem;
@@ -784,6 +830,7 @@
     <li><a href="#request">Request a Track</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#support">Support</a></li>
+    <li><a href="#radio">Road Radio</a></li>
   </ul>
 </nav>
 
@@ -2154,6 +2201,26 @@
   </div>
 </section>
 
+<section class="radio-info" id="radio">
+  <div class="section-wrap">
+    <div class="radio-info-inner">
+      <div class="reveal">
+        <p class="section-label">Always Playing</p>
+        <h2 class="section-title">Road Radio</h2>
+      </div>
+      <p class="reveal">Every visitor to this site gets their own shuffled radio, pulling from the whole growing Road Universe catalog — with a little extra rotation for whatever just came out. Look for the amber bar at the bottom of the screen; click play, and the whole universe starts playing in the background while you explore.</p>
+      <div class="radio-info-badge reveal"><span class="radio-info-live-dot"></span> Playing right now, at the bottom of this page</div>
+      <p class="reveal">Road Radio also exists as a browser extension, so it can keep playing wherever you browse — not just here.</p>
+
+      <div class="radio-privacy reveal">
+        <h3 class="radio-privacy-title" id="radio-privacy">Road Radio — Privacy Policy</h3>
+        <p>Road Radio stores one thing locally in your browser: whether the radio is muted or unmuted, so it remembers your preference next time.</p>
+        <p>This is stored only on your own device using your browser's local storage — it is never sent anywhere, never linked to you, and never shared with anyone, including us. Road Radio does not collect, track, or transmit any personal data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="footer-name">Szilard Studios</div>
   <div class="footer-tagline">Roads taken, roads found, roads that found you.</div>
@@ -2273,6 +2340,7 @@
             updateMuteIcon(false);
           }
           event.target.playVideo();
+          startTrackWatcher();
           radioStartTimeout = setTimeout(function () {
             if (!radioHasEverPlayed) {
               showManualStartPrompt();
@@ -2304,16 +2372,45 @@
       updatePlayIcon(false);
     } else if (event.data === YT.PlayerState.CUED) {
       updateNowPlaying();
-    } else if (event.data === YT.PlayerState.ENDED) {
-      handleRadioTrackEnded();
     }
+  }
+
+  // YouTube's own playlist+loop auto-advance moves from one video straight
+  // to the next internally without reliably firing a distinct "ended"
+  // state in between — so waiting for that event to inject a New Release
+  // track never actually triggers. Instead, poll for the video ID itself
+  // changing, which catches every track change regardless of how it happened.
+  var lastKnownVideoId = null;
+  var suppressNextChange = false; // true right after we deliberately switch playlists ourselves
+
+  function startTrackWatcher() {
+    setInterval(function () {
+      if (!ytPlayer || !ytPlayer.getVideoData) return;
+      var data = ytPlayer.getVideoData();
+      var vid = data && data.video_id;
+      if (!vid) return;
+      if (lastKnownVideoId === null) {
+        lastKnownVideoId = vid;
+        return;
+      }
+      if (vid !== lastKnownVideoId) {
+        lastKnownVideoId = vid;
+        if (suppressNextChange) {
+          suppressNextChange = false;
+          return;
+        }
+        handleRadioTrackEnded();
+      }
+    }, 2000);
   }
 
   function handleRadioTrackEnded() {
     if (!ytPlayer || !ytPlayer.cuePlaylist) return;
     if (radioInNewRelease) {
       // Just finished a New Release track — rejoin the full catalog.
+      console.log('[Radio] finished a New Release track, rejoining Road Radio');
       radioInNewRelease = false;
+      suppressNextChange = true;
       ytPlayer.cuePlaylist(radioPlaylistId);
       ytPlayer.setShuffle(true);
       ytPlayer.playVideo();
@@ -2321,16 +2418,17 @@
     }
     // Roughly 1-in-5 chance to dip into the newest release, giving it
     // extra rotation beyond what its size alone would earn in the shuffle.
-    if (Math.random() < 0.2) {
+    var roll = Math.random();
+    console.log('[Radio] weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> staying on Road Radio');
+    if (roll < 0.2) {
       radioInNewRelease = true;
+      suppressNextChange = true;
       ytPlayer.cuePlaylist(newReleasePlaylistId);
       ytPlayer.setShuffle(true);
       ytPlayer.playVideo();
-    } else {
-      ytPlayer.cuePlaylist(radioPlaylistId);
-      ytPlayer.setShuffle(true);
-      ytPlayer.playVideo();
     }
+    // If the roll misses, do nothing — the current track is already
+    // playing fine on its own via the native playlist advance.
   }
 
   function showManualStartPrompt() {
@@ -2345,6 +2443,7 @@
     var data = ytPlayer.getVideoData();
     if (data && data.title) {
       document.getElementById('radio-track').textContent = data.title;
+      console.log('[Radio] now playing:', data.title, '| in New Release mode:', radioInNewRelease);
     }
   }
 
