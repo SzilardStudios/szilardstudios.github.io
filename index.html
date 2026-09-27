@@ -2451,16 +2451,22 @@
   }
 
   function handOffRadioTo(toA) {
+    var incoming = toA ? playerA : playerB;
+    var outgoing = toA ? playerB : playerA;
+    // Mute the outgoing player immediately, and force the incoming one to
+    // a fresh track WHILE IT'S STILL MUTED — so nobody hears the leftover
+    // moment of whatever it was quietly playing in the background.
+    if (outgoing && outgoing.mute) outgoing.mute();
+    if (incoming && incoming.nextVideo) incoming.nextVideo();
     activeIsA = toA;
-    applyMuteState();
-    // The player taking over has been running unattended in the
-    // background — jump it to a fresh track rather than picking up
-    // wherever it silently drifted to while nobody was listening.
-    var p = toA ? playerA : playerB;
-    if (p && p.nextVideo) p.nextVideo();
     lastKnownVideoId = null; // next poll captures that fresh track as the new baseline
     suppressUntil = Date.now() + 4000; // absorb the nextVideo() transition itself
-    updateNowPlaying();
+    // Give the fresh track a brief moment to actually start before making
+    // it audible.
+    setTimeout(function () {
+      applyMuteState();
+      updateNowPlaying();
+    }, 400);
   }
 
   function handleRadioTrackEnded() {
