@@ -116,9 +116,12 @@
     console.log('[Bridge] switching to', label, '(' + playlistId + ')');
     suppressUntil = Date.now() + 6000; // ignore the next 6s of changes — long
                                         // enough to absorb any flicker from the switch itself
-    ytPlayer.cuePlaylist(playlistId);
+    // cuePlaylist() proved unreliable when called on an already-playing
+    // player — it would silently keep playing whatever was already loaded.
+    // loadPlaylist() loads AND plays in one atomic step, which actually
+    // forces the switch to take effect.
+    ytPlayer.loadPlaylist({ list: playlistId, listType: 'playlist' });
     ytPlayer.setShuffle(true);
-    ytPlayer.playVideo();
     // Verify what actually loaded, for diagnosis.
     setTimeout(function () {
       if (ytPlayer && ytPlayer.getPlaylist) {
