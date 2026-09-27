@@ -116,20 +116,21 @@
   }
 
   function switchTo(playlistId, label) {
-    console.log('[Bridge] switching to', label, '(' + playlistId + ')');
+    console.log('[Bridge] switching to', label, '- target ID:', playlistId, '(type:', typeof playlistId + ')');
     suppressUntil = Date.now() + 6000; // ignore the next 6s of changes — long
                                         // enough to absorb any flicker from the switch itself
     // cuePlaylist() proved unreliable when called on an already-playing
     // player — it would silently keep playing whatever was already loaded.
     // loadPlaylist() loads AND plays in one atomic step, which actually
     // forces the switch to take effect.
-    ytPlayer.loadPlaylist({ list: playlistId, listType: 'playlist' });
+    ytPlayer.loadPlaylist(playlistId);
     ytPlayer.setShuffle(true);
     // Verify what actually loaded, for diagnosis.
     setTimeout(function () {
       if (ytPlayer && ytPlayer.getPlaylist) {
         var list = ytPlayer.getPlaylist();
-        console.log('[Bridge] after switching to', label, '— actual loaded playlist has', list ? list.length : 0, 'videos, first ID:', list && list[0]);
+        var activeId = ytPlayer.getPlaylistId ? ytPlayer.getPlaylistId() : 'n/a';
+        console.log('[Bridge] after switching to', label, '— player reports active playlist ID:', activeId, '| loaded', list ? list.length : 0, 'videos, first ID:', list && list[0]);
       }
     }, 1500);
   }
