@@ -2300,6 +2300,7 @@
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
   var radioStartTimeout;
+  var userPausedRadio = false;
 
   function loadYTAPI() {
     var tag = document.createElement('script');
@@ -2341,6 +2342,7 @@
           }
           event.target.playVideo();
           startTrackWatcher();
+          startRadioWatchdog();
           radioStartTimeout = setTimeout(function () {
             if (!radioHasEverPlayed) {
               showManualStartPrompt();
@@ -2381,7 +2383,9 @@
   // track never actually triggers. Instead, poll for the video ID itself
   // changing, which catches every track change regardless of how it happened.
   var lastKnownVideoId = null;
-  var suppressNextChange = false; // true right after we deliberately switch playlists ourselves
+  var suppressUntil = 0; // timestamp — ignore all changes until this passes,
+                          // since a deliberate playlist switch can cause more
+                          // than one rapid video_id flicker, not just one
 
   function startTrackWatcher() {
     setInterval(function () {
@@ -2395,13 +2399,28 @@
       }
       if (vid !== lastKnownVideoId) {
         lastKnownVideoId = vid;
-        if (suppressNextChange) {
-          suppressNextChange = false;
+        if (Date.now() < suppressUntil) {
+          console.log('[Radio] change ignored (within cooldown after our own switch)');
           return;
         }
         handleRadioTrackEnded();
       }
     }, 2000);
+  }
+
+  function switchRadioTo(playlistId, label) {
+    console.log('[Radio] switching to', label, '(' + playlistId + ')');
+    suppressUntil = Date.now() + 6000; // ignore the next 6s of changes — long
+                                        // enough to absorb any flicker from the switch itself
+    ytPlayer.cuePlaylist(playlistId);
+    ytPlayer.setShuffle(true);
+    ytPlayer.playVideo();
+    setTimeout(function () {
+      if (ytPlayer && ytPlayer.getPlaylist) {
+        var list = ytPlayer.getPlaylist();
+        console.log('[Radio] after switching to', label, '— actual loaded playlist has', list ? list.length : 0, 'videos, first ID:', list && list[0]);
+      }
+    }, 1500);
   }
 
   function handleRadioTrackEnded() {
@@ -2410,10 +2429,7 @@
       // Just finished a New Release track — rejoin the full catalog.
       console.log('[Radio] finished a New Release track, rejoining Road Radio');
       radioInNewRelease = false;
-      suppressNextChange = true;
-      ytPlayer.cuePlaylist(radioPlaylistId);
-      ytPlayer.setShuffle(true);
-      ytPlayer.playVideo();
+      switchRadioTo(radioPlaylistId, 'Road Radio');
       return;
     }
     // Roughly 1-in-5 chance to dip into the newest release, giving it
@@ -2422,13 +2438,31 @@
     console.log('[Radio] weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> staying on Road Radio');
     if (roll < 0.2) {
       radioInNewRelease = true;
-      suppressNextChange = true;
-      ytPlayer.cuePlaylist(newReleasePlaylistId);
-      ytPlayer.setShuffle(true);
-      ytPlayer.playVideo();
+      switchRadioTo(newReleasePlaylistId, 'New Release');
     }
     // If the roll misses, do nothing — the current track is already
     // playing fine on its own via the native playlist advance.
+  }
+
+  // Self-healing watchdog — if playback isn't PLAYING and the user didn't
+  // deliberately pause it, something went wrong internally. Force a clean
+  // recovery onto Road Radio rather than leaving the radio silently dead.
+  var lastPlayingAt = Date.now();
+  function startRadioWatchdog() {
+    setInterval(function () {
+      if (!ytPlayer || !ytPlayer.getPlayerState) return;
+      if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+        lastPlayingAt = Date.now();
+        return;
+      }
+      if (userPausedRadio) return;
+      if (Date.now() - lastPlayingAt > 20000) {
+        console.log('[Radio] watchdog: no playback for 20s and not user-paused — recovering');
+        lastPlayingAt = Date.now();
+        radioInNewRelease = false;
+        switchRadioTo(radioPlaylistId, 'Road Radio (recovery)');
+      }
+    }, 5000);
   }
 
   function showManualStartPrompt() {
@@ -2490,8 +2524,10 @@
       }
       var state = ytPlayer.getPlayerState();
       if (state === YT.PlayerState.PLAYING) {
+        userPausedRadio = true;
         ytPlayer.pauseVideo();
       } else {
+        userPausedRadio = false;
         ytPlayer.playVideo();
       }
     });
