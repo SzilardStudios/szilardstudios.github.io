@@ -2308,6 +2308,7 @@
   var playerA, playerB; // A = Road Radio, B = New Release
   var playerAReady = false, playerBReady = false;
   var activeIsA = true;
+  var radioInitialized = false;
   var consecutiveRadioErrors = 0;
   var radioHasEverPlayed = false;
   var radioStartTimeout;
@@ -2346,21 +2347,25 @@
           } else {
             playerBReady = true;
           }
-          if (playerAReady && playerBReady) {
+          var activeReady = activeIsA ? playerAReady : playerBReady;
+          if (activeReady && !radioInitialized) {
+            radioInitialized = true;
             var storedMuted = localStorage.getItem('radioMuted');
             var startMuted = storedMuted === null ? true : storedMuted === 'true';
             masterMuted = startMuted;
             applyMuteState();
             updateMuteIcon(startMuted);
             if (startMuted) showRadioToast();
-            startTrackWatcher();
-            startRadioWatchdog();
             updateNowPlaying();
             radioStartTimeout = setTimeout(function () {
               if (!radioHasEverPlayed) {
                 showManualStartPrompt();
               }
             }, 8000);
+          }
+          if (playerAReady && playerBReady) {
+            startTrackWatcher();
+            startRadioWatchdog();
           }
         },
         'onStateChange': onPlayerStateChange,
@@ -2391,14 +2396,16 @@
   // The active player follows the real (master) mute state. The inactive
   // player is ALWAYS kept muted — it plays quietly in the background so
   // it's instantly ready to take over, but must never be heard.
+  // Deliberately doesn't require BOTH players ready — otherwise if one
+  // takes even slightly longer to load, every command (including unmute)
+  // silently does nothing until it catches up.
   function applyMuteState() {
-    if (!playerAReady || !playerBReady) return;
     if (activeIsA) {
-      masterMuted ? playerA.mute() : playerA.unMute();
-      playerB.mute();
+      if (playerAReady) { masterMuted ? playerA.mute() : playerA.unMute(); }
+      if (playerBReady) { playerB.mute(); }
     } else {
-      masterMuted ? playerB.mute() : playerB.unMute();
-      playerA.mute();
+      if (playerBReady) { masterMuted ? playerB.mute() : playerB.unMute(); }
+      if (playerAReady) { playerA.mute(); }
     }
   }
 
@@ -2534,7 +2541,7 @@
     loadYTAPI();
 
     setTimeout(function () {
-      if (!playerAReady || !playerBReady) {
+      if (!radioInitialized) {
         var trackEl = document.getElementById('radio-track');
         if (trackEl) trackEl.textContent = 'Radio blocked — check for an ad blocker or privacy extension';
         var playBtn = document.getElementById('radio-play');
@@ -2566,7 +2573,8 @@
     });
 
     document.getElementById('radio-mute').addEventListener('click', function () {
-      if (!playerAReady || !playerBReady) return;
+      var activeReady = activeIsA ? playerAReady : playerBReady;
+      if (!activeReady) return;
       masterMuted = !masterMuted;
       applyMuteState();
       localStorage.setItem('radioMuted', masterMuted ? 'true' : 'false');

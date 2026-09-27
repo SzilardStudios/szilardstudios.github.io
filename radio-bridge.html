@@ -78,10 +78,16 @@
             playerBReady = true;
           }
           applyMuteState();
+          // Update the UI as soon as the currently-active player is ready —
+          // no reason to leave it stuck on "Tuning in..." just because the
+          // background player hasn't finished loading yet.
+          var activeReady = activeIsA ? playerAReady : playerBReady;
+          if (activeReady) {
+            broadcastState();
+          }
           if (playerAReady && playerBReady) {
             console.log('[Bridge] both players ready');
             startTrackWatcher();
-            broadcastState();
           }
         },
         'onError': function (event) {
@@ -100,14 +106,16 @@
   // The active player follows the real (master) mute state.
   // The inactive player is ALWAYS kept muted — it's playing quietly in the
   // background so it's instantly ready to take over, but must never be heard.
+  // Deliberately doesn't require BOTH players ready — otherwise if one
+  // takes even slightly longer to load, every command (including unmute)
+  // silently does nothing until it catches up.
   function applyMuteState() {
-    if (!playerAReady || !playerBReady) return;
     if (activeIsA) {
-      masterMuted ? playerA.mute() : playerA.unMute();
-      playerB.mute();
+      if (playerAReady) { masterMuted ? playerA.mute() : playerA.unMute(); }
+      if (playerBReady) { playerB.mute(); }
     } else {
-      masterMuted ? playerB.mute() : playerB.unMute();
-      playerA.mute();
+      if (playerBReady) { masterMuted ? playerB.mute() : playerB.unMute(); }
+      if (playerAReady) { playerA.mute(); }
     }
   }
 
@@ -186,8 +194,10 @@
 
   window.addEventListener('message', function (event) {
     var msg = event.data;
-    if (!msg || !msg.cmd || !playerAReady || !playerBReady) return;
+    if (!msg || !msg.cmd) return;
     var p = activePlayer();
+    var pReady = activeIsA ? playerAReady : playerBReady;
+    if (!p || !pReady) return;
 
     if (msg.cmd === 'toggle-play') {
       var state = p.getPlayerState();
