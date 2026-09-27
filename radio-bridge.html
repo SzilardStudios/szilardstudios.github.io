@@ -8,8 +8,7 @@
 <title>Road Radio Bridge</title>
 </head>
 <body style="margin:0; background:#000;">
-<div id="yt-player-a"></div>
-<div id="yt-player-b"></div>
+<div id="yt-player-iframe"></div>
 <script>
   // Road Radio — bridge page
   //
@@ -21,27 +20,13 @@
   // embedding, and just relays play/pause/skip/mute/state back and forth
   // with the extension via postMessage.
   //
-  // Architecture note: normally this runs TWO players simultaneously — one
-  // locked to Road Radio, one locked to New Release — since reloading a
-  // single player's playlist mid-stream proved unreliable. But running two
-  // full embeds inside a Chrome extension's offscreen document (a
-  // deliberately lightweight, resource-constrained environment) appears to
-  // be too much — it was closing itself repeatedly. So when loaded with
-  // ?simple=true (which the extension uses), this only ever creates a
-  // single Road Radio player — no New Release blending, but reliable. The
-  // website loads this normally (no ?simple=true) and gets the full
-  // two-player experience, since a normal browser tab has far more headroom.
+  // Single playlist, native loop+shuffle does all the work — no manual
+  // playlist switching, no weighted blending. Simple, and it's proven
+  // reliable.
 
-  var radioPlaylistId = 'PLXLXsLMekRqM';      // "Road Radio" — the full curated catalog
-  var newReleasePlaylistId = 'PLPqJjW2SrebE'; // "New Release" — always the current album
-
-  var playerA, playerB; // A = Road Radio, B = New Release (B only exists outside simple mode)
-  var playerAReady = false, playerBReady = false;
-  var activeIsA = true;
-  var masterMuted = true;
+  var ytPlayer;
+  var radioPlaylistId = 'PLXLXsLMekRqM'; // "Road Radio" — the curated public playlist
   var userPaused = false;
-  var lastKnownVideoId = null;
-  var simpleMode = false;
 
   function getQueryParam(name) {
     var params = new URLSearchParams(window.location.search);
@@ -55,16 +40,17 @@
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   }
 
-  function makePlayer(elementId, playlistId) {
-    return new YT.Player(elementId, {
+  window.onYouTubeIframeAPIReady = function () {
+    var startMuted = getQueryParam('muted') !== 'false'; // default true
+
+    ytPlayer = new YT.Player('yt-player-iframe', {
       height: '1',
       width: '1',
       playerVars: {
         listType: 'playlist',
-        list: playlistId,
+        list: radioPlaylistId,
         autoplay: 1,
-        mute: 1, // always starts muted — autoplay policy requires it,
-                 // and the real audible state is applied right after ready
+        mute: startMuted ? 1 : 0,
         controls: 0,
         disablekb: 1,
         playsinline: 1,
@@ -74,139 +60,50 @@
       events: {
         'onReady': function (event) {
           event.target.setShuffle(true);
-          event.target.playVideo();
-          if (elementId === 'yt-player-a') {
-            playerAReady = true;
+          if (startMuted) {
+            event.target.mute();
           } else {
-            playerBReady = true;
+            event.target.unMute();
+            event.target.setVolume(100);
           }
-          applyMuteState();
-          // Update the UI as soon as the currently-active player is ready —
-          // no reason to leave it stuck on "Tuning in..." just because a
-          // second background player (if any) hasn't finished loading yet.
-          var activeReady = activeIsA ? playerAReady : playerBReady;
-          if (activeReady) {
-            broadcastState();
-          }
-          if (simpleMode && playerAReady) {
-            console.log('[Bridge] simple mode — single player ready');
-          } else if (!simpleMode && playerAReady && playerBReady) {
-            console.log('[Bridge] both players ready');
-            startTrackWatcher();
-          }
+          event.target.playVideo();
+          broadcastState();
         },
-        'onError': function (event) {
-          if (event.target && event.target.nextVideo) event.target.nextVideo();
+        'onStateChange': onPlayerStateChange,
+        'onError': function () {
+          if (ytPlayer && ytPlayer.nextVideo) ytPlayer.nextVideo();
         }
       }
     });
-  }
-
-  window.onYouTubeIframeAPIReady = function () {
-    masterMuted = getQueryParam('muted') !== 'false'; // default true
-    simpleMode = getQueryParam('simple') === 'true';
-    playerA = makePlayer('yt-player-a', radioPlaylistId);
-    if (!simpleMode) {
-      playerB = makePlayer('yt-player-b', newReleasePlaylistId);
-    } else {
-      var bDiv = document.getElementById('yt-player-b');
-      if (bDiv) bDiv.remove();
-    }
   };
 
-  // The active player follows the real (master) mute state.
-  // The inactive player (if any) is ALWAYS kept muted — it's playing
-  // quietly in the background so it's instantly ready to take over, but
-  // must never be heard.
-  function applyMuteState() {
-    if (activeIsA) {
-      if (playerAReady) { masterMuted ? playerA.mute() : playerA.unMute(); }
-      if (playerBReady) { playerB.mute(); }
-    } else {
-      if (playerBReady) { masterMuted ? playerB.mute() : playerB.unMute(); }
-      if (playerAReady) { playerA.mute(); }
-    }
-  }
-
-  function activePlayer() {
-    return activeIsA ? playerA : playerB;
-  }
-
-  // Poll whichever player is currently active for its video ID changing —
-  // YouTube's own playlist+loop auto-advance doesn't reliably fire a
-  // distinct "ended" event per track, so polling catches every change
-  // regardless of how it happened internally. Only relevant outside
-  // simple mode, since a single player has nothing to switch to anyway.
-  var suppressUntil = 0; // timestamp — a handoff forces its own track change
-                          // via nextVideo(), which this window absorbs so it
-                          // isn't mistaken for a second, unrelated track-end
-
-  function startTrackWatcher() {
-    setInterval(function () {
-      var p = activePlayer();
-      if (!p || !p.getVideoData) return;
-      var data = p.getVideoData();
-      var vid = data && data.video_id;
-      if (!vid) return;
-      if (lastKnownVideoId === null || Date.now() < suppressUntil) {
-        lastKnownVideoId = vid;
-        return;
-      }
-      if (vid !== lastKnownVideoId) {
-        lastKnownVideoId = vid;
-        handleActiveTrackChanged();
-      }
-    }, 2000);
-  }
-
-  function handleActiveTrackChanged() {
-    if (activeIsA) {
-      // A track on Road Radio just finished naturally — roughly 1-in-5
-      // chance to hand off to New Release, which has been playing quietly
-      // in the background this whole time.
-      var roll = Math.random();
-      console.log('[Bridge] weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> staying on Road Radio');
-      if (roll < 0.2) {
-        handOffTo(false);
-      }
-    } else {
-      // A New Release track just finished — hand control back to Road Radio.
-      console.log('[Bridge] finished a New Release track, handing back to Road Radio');
-      handOffTo(true);
-    }
-  }
-
-  function handOffTo(toA) {
-    var incoming = toA ? playerA : playerB;
-    var outgoing = toA ? playerB : playerA;
-    // Mute the outgoing player immediately, and force the incoming one to
-    // a fresh track WHILE IT'S STILL MUTED — so nobody hears the leftover
-    // moment of whatever it was quietly playing in the background.
-    if (outgoing && outgoing.mute) outgoing.mute();
-    if (incoming && incoming.nextVideo) incoming.nextVideo();
-    activeIsA = toA;
-    lastKnownVideoId = null; // next poll captures that fresh track as the new baseline
-    suppressUntil = Date.now() + 4000; // absorb the nextVideo() transition itself
-    // Give the fresh track a brief moment to actually start before making
-    // it audible.
-    setTimeout(function () {
-      applyMuteState();
+  function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.PLAYING) {
       broadcastState();
-    }, 400);
+    } else if (event.data === YT.PlayerState.PAUSED) {
+      broadcastState();
+    } else if (event.data === YT.PlayerState.CUED) {
+      broadcastState();
+    } else if (event.data === YT.PlayerState.ENDED) {
+      // Safety net — loop:1 should prevent this, but if the player ever
+      // genuinely runs out of playlist, reshuffle and keep the radio going
+      // rather than showing a dead "replay" state.
+      if (ytPlayer && ytPlayer.cuePlaylist) {
+        ytPlayer.cuePlaylist(radioPlaylistId);
+        ytPlayer.setShuffle(true);
+        ytPlayer.playVideo();
+      }
+    }
   }
 
   function broadcastState() {
-    var p = activePlayer();
-    if (!p || !p.getPlayerState) return;
-    var data = p.getVideoData ? p.getVideoData() : {};
-    var state = p.getPlayerState();
-    if (data && data.title) {
-      console.log('[Bridge] now playing:', data.title, '| active:', activeIsA ? 'Road Radio' : 'New Release');
-    }
+    if (!ytPlayer || !ytPlayer.getPlayerState) return;
+    var data = ytPlayer.getVideoData ? ytPlayer.getVideoData() : {};
+    var state = ytPlayer.getPlayerState();
     sendToParent({
       type: 'state',
       playing: state === YT.PlayerState.PLAYING,
-      muted: masterMuted,
+      muted: ytPlayer.isMuted ? ytPlayer.isMuted() : true,
       title: data && data.title ? data.title : 'Tuning in...',
       videoId: data && data.video_id ? data.video_id : null
     });
@@ -220,39 +117,39 @@
 
   window.addEventListener('message', function (event) {
     var msg = event.data;
-    if (!msg || !msg.cmd) return;
-    var p = activePlayer();
-    var pReady = activeIsA ? playerAReady : playerBReady;
-    if (!p || !pReady) return;
+    if (!msg || !msg.cmd || !ytPlayer) return;
 
     if (msg.cmd === 'toggle-play') {
-      var state = p.getPlayerState();
+      var state = ytPlayer.getPlayerState();
       if (state === YT.PlayerState.PLAYING) {
         userPaused = true;
-        p.pauseVideo();
+        ytPlayer.pauseVideo();
       } else {
         userPaused = false;
-        p.playVideo();
+        ytPlayer.playVideo();
       }
     } else if (msg.cmd === 'next') {
-      p.nextVideo();
+      ytPlayer.nextVideo();
     } else if (msg.cmd === 'toggle-mute') {
-      masterMuted = !masterMuted;
-      applyMuteState();
+      if (ytPlayer.isMuted()) {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(100);
+      } else {
+        ytPlayer.mute();
+      }
       broadcastState();
     } else if (msg.cmd === 'request-state') {
       broadcastState();
     }
   });
 
-  // Self-healing watchdog — if the active player isn't PLAYING and the
-  // user didn't deliberately pause it, force a clean recovery rather than
-  // leaving the radio silently dead.
+  // Self-healing watchdog — if playback isn't PLAYING and the user didn't
+  // deliberately pause it, something went wrong internally. Force a clean
+  // recovery rather than leaving the radio silently dead.
   var lastPlayingAt = Date.now();
   setInterval(function () {
-    var p = activePlayer();
-    if (!p || !p.getPlayerState) return;
-    if (p.getPlayerState() === YT.PlayerState.PLAYING) {
+    if (!ytPlayer || !ytPlayer.getPlayerState) return;
+    if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
       lastPlayingAt = Date.now();
       return;
     }
@@ -260,12 +157,9 @@
     if (Date.now() - lastPlayingAt > 20000) {
       console.log('[Bridge] watchdog: no playback for 20s and not user-paused — recovering');
       lastPlayingAt = Date.now();
-      if (simpleMode) {
-        if (playerA && playerA.playVideo) playerA.playVideo();
-      } else {
-        handOffTo(true);
-        if (playerA && playerA.playVideo) playerA.playVideo();
-      }
+      ytPlayer.cuePlaylist(radioPlaylistId);
+      ytPlayer.setShuffle(true);
+      ytPlayer.playVideo();
     }
   }, 5000);
 
