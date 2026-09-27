@@ -85,13 +85,18 @@
   function handleTrackEnded() {
     if (!ytPlayer || !ytPlayer.cuePlaylist) return;
     if (radioInNewRelease) {
+      console.log('[Bridge] finished a New Release track, rejoining Road Radio');
       radioInNewRelease = false;
       ytPlayer.cuePlaylist(radioPlaylistId);
-    } else if (Math.random() < 0.2) {
-      radioInNewRelease = true;
-      ytPlayer.cuePlaylist(newReleasePlaylistId);
     } else {
-      ytPlayer.cuePlaylist(radioPlaylistId);
+      var roll = Math.random();
+      console.log('[Bridge] track ended, weighted roll:', roll.toFixed(3), roll < 0.2 ? '-> NEW RELEASE' : '-> Road Radio');
+      if (roll < 0.2) {
+        radioInNewRelease = true;
+        ytPlayer.cuePlaylist(newReleasePlaylistId);
+      } else {
+        ytPlayer.cuePlaylist(radioPlaylistId);
+      }
     }
     ytPlayer.setShuffle(true);
     ytPlayer.playVideo();
@@ -101,6 +106,9 @@
     if (!ytPlayer || !ytPlayer.getPlayerState) return;
     var data = ytPlayer.getVideoData ? ytPlayer.getVideoData() : {};
     var state = ytPlayer.getPlayerState();
+    if (data && data.title) {
+      console.log('[Bridge] now playing:', data.title, '| in New Release mode:', radioInNewRelease);
+    }
     sendToParent({
       type: 'state',
       playing: state === YT.PlayerState.PLAYING,
