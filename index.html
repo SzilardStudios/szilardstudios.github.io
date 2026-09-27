@@ -2401,10 +2401,14 @@
   // silently does nothing until it catches up.
   function applyMuteState() {
     if (activeIsA) {
-      if (playerAReady) { masterMuted ? playerA.mute() : playerA.unMute(); }
+      if (playerAReady) {
+        if (masterMuted) { playerA.mute(); } else { playerA.unMute(); playerA.setVolume(100); }
+      }
       if (playerBReady) { playerB.mute(); }
     } else {
-      if (playerBReady) { masterMuted ? playerB.mute() : playerB.unMute(); }
+      if (playerBReady) {
+        if (masterMuted) { playerB.mute(); } else { playerB.unMute(); playerB.setVolume(100); }
+      }
       if (playerAReady) { playerA.mute(); }
     }
   }
@@ -2466,7 +2470,7 @@
     setTimeout(function () {
       applyMuteState();
       updateNowPlaying();
-    }, 400);
+    }, 1200);
   }
 
   function handleRadioTrackEnded() {
