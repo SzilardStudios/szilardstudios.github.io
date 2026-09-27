@@ -2449,8 +2449,13 @@
 
   function handOffRadioTo(toA) {
     activeIsA = toA;
-    lastKnownVideoId = null; // next poll just captures the newly-active player's current track as the baseline
     applyMuteState();
+    // The player taking over has been running unattended in the
+    // background — jump it to a fresh track rather than picking up
+    // wherever it silently drifted to while nobody was listening.
+    var p = toA ? playerA : playerB;
+    if (p && p.nextVideo) p.nextVideo();
+    lastKnownVideoId = null; // next poll captures that fresh track as the new baseline
     updateNowPlaying();
   }
 
