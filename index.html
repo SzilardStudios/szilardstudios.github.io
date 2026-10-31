@@ -22,6 +22,12 @@
   "alternateName": "The Road Universe",
   "url": "https://szilardstudios.com",
   "logo": "https://szilardstudios.com/szilard-studios-logo-on-parchment.png",
+  "image": "https://szilardstudios.com/szilard-sztancsik.jpg",
+  "founder": {
+    "@type": "Person",
+    "name": "Szilard Sztancsik",
+    "image": "https://szilardstudios.com/szilard-sztancsik.jpg"
+  },
   "description": "A connected story universe told through 15+ fictional bands and a dozen genres, from blues and gospel to Arabic rock, Japanese metal and mariachi rock.",
   "sameAs": [
     "https://youtube.com/@The_Road_Universe",
@@ -278,6 +284,34 @@
     padding-left: 1.5rem;
     margin: 2rem 0;
     line-height: 1.8;
+  }
+  .about { border-top: 1px solid var(--parchment-dark); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 380px) 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  .about-photo { margin: 0; }
+  .about-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--parchment-dark);
+  }
+  .about-photo figcaption {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--sepia);
+    margin-top: 0.8rem;
+  }
+  .about-text p { color: var(--ink-soft); margin-bottom: 1.2rem; font-size: 1.1rem; }
+  .about-text a { color: var(--amber-deep); border-bottom: 1px solid var(--amber); text-decoration: none; }
+  @media (max-width: 800px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .about-photo { max-width: 380px; }
   }
   .universe-pillars { display: flex; flex-direction: column; gap: 1.5rem; }
   .pillar {
@@ -918,6 +952,25 @@
           <p class="pillar-title">Connected</p>
           <p>Characters cross albums. Choices echo forward. Listen to one and hear the others underneath it.</p>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-wrap">
+    <div class="reveal">
+      <p class="section-label">About</p>
+      <h2 class="section-title">The one behind the road</h2>
+    </div>
+    <div class="about-grid">
+      <figure class="about-photo reveal">
+        <img src="szilard-sztancsik.jpg" width="900" height="900" loading="lazy" alt="Szilard Sztancsik, creator of The Road Universe, standing on a road at sunset in front of a gothic palace and a roadside diner">
+        <figcaption>Szilard Sztancsik, composer and creator of The Road Universe</figcaption>
+      </figure>
+      <div class="about-text reveal">
+        <p>Szilard Sztancsik is a composer and world-builder. The Road Universe is his connected story of more than fifteen fictional bands, told across a dozen genres, from blues and gospel to Arabic rock, Japanese metal and mariachi rock.</p>
+        <p>Its places, from The Crossing diner to Della's and the Palace of the Rock, appear across the albums. Listen free on <a href="#radio">Road Radio</a>, or find the music on Spotify, <a href="https://tidal.com/artist/81112072" target="_blank" rel="noopener">Tidal</a> and <a href="https://youtube.com/@The_Road_Universe" target="_blank" rel="noopener">YouTube</a>. Meet the people behind the music on the <a href="bands.html">Bands page</a>.</p>
       </div>
     </div>
   </div>
